@@ -1,3 +1,10 @@
+*.in
+*.out
+
+hw?.out
+hw?-*.pdf
+hw?-*.svg
+
 # generic
 .\#*
 .nfs????

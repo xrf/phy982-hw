@@ -1,0 +1,854 @@
+#!/bin/sh
+# aa04aa59c4fc32ba1cb197bf5faa5bd9d6bde906
+
+mkdir -p 'sigilz'
+sed "s/^ //" <<"EOF" >'sigilz/sigilz.gfskp.tex'
+ % GFS Neohellenic (text) / Kp-fonts (math)
+ % ========================================
+
+ % GFS Neohellenic (text)
+ \usepackage[LGR, T1]{fontenc}
+ \usepackage[default]{gfsneohellenic}
+
+ % Undo the GFS Neohellenic changes to the math digits
+ \DeclareMathSymbol{0}{\mathalpha}{operators}{`0}
+ \DeclareMathSymbol{1}{\mathalpha}{operators}{`1}
+ \DeclareMathSymbol{2}{\mathalpha}{operators}{`2}
+ \DeclareMathSymbol{3}{\mathalpha}{operators}{`3}
+ \DeclareMathSymbol{4}{\mathalpha}{operators}{`4}
+ \DeclareMathSymbol{5}{\mathalpha}{operators}{`5}
+ \DeclareMathSymbol{6}{\mathalpha}{operators}{`6}
+ \DeclareMathSymbol{7}{\mathalpha}{operators}{`7}
+ \DeclareMathSymbol{8}{\mathalpha}{operators}{`8}
+ \DeclareMathSymbol{9}{\mathalpha}{operators}{`9}
+
+ % Kpfonts (math)
+ \usepackage[noDcommand, nott, notext, slantedGreeks]{kpfonts}
+ \renewcommand*\ttdefault{txtt}
+
+ \DeclareSymbolFont{letterssf}{OML}{jkpss}{m}{it}
+ \SetSymbolFont{letterssf}{bold}{OML}{jkpss}{bx}{it}
+ \DeclareSymbolFont{lettersAsf}{U}{jkpssmia}{m}{it}
+ \SetSymbolFont{lettersAsf}{bold}{U}{jkpssmia}{bx}{it}
+
+ \DeclareMathSymbol{\Gammasf}{\mathalpha}{lettersAsf}{00}
+ \DeclareMathSymbol{\Deltasf}{\mathalpha}{lettersAsf}{01}
+ \DeclareMathSymbol{\Thetasf}{\mathalpha}{lettersAsf}{02}
+ \DeclareMathSymbol{\Lambdasf}{\mathalpha}{lettersAsf}{03}
+ \DeclareMathSymbol{\Xisf}{\mathalpha}{lettersAsf}{04}
+ \DeclareMathSymbol{\Pisf}{\mathalpha}{lettersAsf}{05}
+ \DeclareMathSymbol{\Sigmasf}{\mathalpha}{lettersAsf}{06}
+ \DeclareMathSymbol{\Upsilonsf}{\mathalpha}{lettersAsf}{07}
+ \DeclareMathSymbol{\Phisf}{\mathalpha}{lettersAsf}{08}
+ \DeclareMathSymbol{\Psisf}{\mathalpha}{lettersAsf}{09}
+ \DeclareMathSymbol{\Omegasf}{\mathalpha}{lettersAsf}{10}
+ \DeclareMathSymbol{\alphasf}{\mathord}{lettersAsf}{11}
+ \DeclareMathSymbol{\betasf}{\mathord}{lettersAsf}{12}
+ \DeclareMathSymbol{\gammasf}{\mathord}{lettersAsf}{13}
+ \DeclareMathSymbol{\deltasf}{\mathord}{lettersAsf}{14}
+ \DeclareMathSymbol{\epsilonsf}{\mathord}{lettersAsf}{15}
+ \DeclareMathSymbol{\zetasf}{\mathord}{lettersAsf}{16}
+ \DeclareMathSymbol{\etasf}{\mathord}{lettersAsf}{17}
+ \DeclareMathSymbol{\thetasf}{\mathord}{lettersAsf}{18}
+ \DeclareMathSymbol{\iotasf}{\mathord}{lettersAsf}{19}
+ \DeclareMathSymbol{\kappasf}{\mathord}{lettersAsf}{20}
+ \DeclareMathSymbol{\lambdasf}{\mathord}{lettersAsf}{21}
+ \DeclareMathSymbol{\musf}{\mathord}{lettersAsf}{22}
+ \DeclareMathSymbol{\nusf}{\mathord}{lettersAsf}{23}
+ \DeclareMathSymbol{\xisf}{\mathord}{lettersAsf}{24}
+ \DeclareMathSymbol{\pisf}{\mathord}{lettersAsf}{25}
+ \DeclareMathSymbol{\rhosf}{\mathord}{lettersAsf}{26}
+ \DeclareMathSymbol{\sigmasf}{\mathord}{lettersAsf}{27}
+ \DeclareMathSymbol{\tausf}{\mathord}{lettersAsf}{28}
+ \DeclareMathSymbol{\upsilonsf}{\mathord}{lettersAsf}{29}
+ \DeclareMathSymbol{\phisf}{\mathord}{lettersAsf}{30}
+ \DeclareMathSymbol{\chisf}{\mathord}{lettersAsf}{31}
+ \DeclareMathSymbol{\psisf}{\mathord}{lettersAsf}{32}
+ \DeclareMathSymbol{\omegasf}{\mathord}{lettersAsf}{33}
+ \DeclareMathSymbol{\varepsilonsf}{\mathord}{lettersAsf}{34}
+ \DeclareMathSymbol{\varthetasf}{\mathord}{lettersAsf}{35}
+ \DeclareMathSymbol{\varpisf}{\mathord}{lettersAsf}{36}
+ \DeclareMathSymbol{\varrhosf}{\mathord}{lettersAsf}{37}
+ \DeclareMathSymbol{\varsigmasf}{\mathord}{lettersAsf}{38}
+ \DeclareMathSymbol{\varphisf}{\mathord}{lettersAsf}{39}
+
+ % Sans-serif style (for both Latin and Greek letters)
+ \def\changegreek#1{\@for\next:={%
+   alpha,beta,gamma,delta,epsilon,zeta,eta,theta,kappa,lambda,mu,nu,xi,pi,rho,%
+   sigma,tau,upsilon,phi,chi,psi,omega,varepsilon,vartheta,varpi,varrho,%
+   varsigma,varphi,Gamma,Delta,Theta,Lambda,Xi,Pi,Sigma,Upsilon,Phi,Psi,Omega}%
+  \do{\expandafter
+      \let\csname\next\expandafter\endcsname
+      \csname\next #1\endcsname}}
+ \DeclareRobustCommand{\mathsfx}[1]{
+   \begingroup\changegreek{sf}\mathsf{#1}\endgroup}
+ \DeclareRobustCommand{\mathbsfx}[1]{
+   \begingroup\changegreek{sf}\bm{\mathsf{#1}}\endgroup}
+EOF
+chmod 644 'sigilz/sigilz.gfskp.tex'
+
+mkdir -p 'sigilz'
+sed "s/^ //" <<"EOF" >'sigilz/sigilz.math.sty'
+ \NeedsTeXFormat{LaTeX2e}
+ \ProvidesPackage{sigilz.math}
+
+ % ----------------------------------------------------------------------------
+ %
+ % Options
+ % =======
+
+ % Disables all packages
+ \newif\if@szAllowDisplayBreaks@\@szAllowDisplayBreaks@false
+ \DeclareOption{allowDisplayBreaks}{\@szAllowDisplayBreaks@true}
+
+ \ProcessOptions\relax
+
+ % ----------------------------------------------------------------------------
+ %
+ % Basic symbols & macros
+ % ======================
+
+ \RequirePackage{cancel}                 % Slash used for cancellations
+ \RequirePackage{scalerel}               % Scaling math symbols
+ \RequirePackage{slashed}                % Feynman slash notation
+ \RequirePackage{sigilz.upgreek}         % Upright Greek letters (if available)
+
+ % Mathematical constants (upright)
+ \providecommand{\E}{\mathrm e}
+ \providecommand{\I}{\mathrm i}
+ \providecommand{\PI}{\piup}
+
+ % Special sets / types
+ \providecommand{\Univ}{\mathbb U}
+ \providecommand{\Cplx}{\mathbb C}
+ \providecommand{\Real}{\mathbb R}
+ \providecommand{\Int}{\mathbb Z}
+ \providecommand{\Nat}{\mathbb N}
+ \providecommand{\nothing}{\varnothing}
+
+ % Special tensors
+ \providecommand{\Kroneckerdelta}{\deltaup}
+ \providecommand{\LeviCivita}{\epsilonup}
+
+ % Transcendental functions
+ \providecommand{\sech}{\operatorname{sech}}
+ \providecommand{\csch}{\operatorname{csch}}
+ \providecommand{\arccot}{\operatorname{arccot}}
+ \providecommand{\arcsec}{\operatorname{arcsec}}
+ \providecommand{\arccsc}{\operatorname{arccsc}}
+ \providecommand{\arsinh}{\operatorname{arsinh}}
+ \providecommand{\arcosh}{\operatorname{arcosh}}
+ \providecommand{\artanh}{\operatorname{artanh}}
+ \providecommand{\arcoth}{\operatorname{arcoth}}
+ \providecommand{\arsech}{\operatorname{arsech}}
+ \providecommand{\arcsch}{\operatorname{arcsch}}
+ \providecommand{\deltaf}{\operatorname{\deltaup}}
+ \providecommand{\Gammaf}{\operatorname{\Gammaup}}
+ \providecommand{\erf}{\operatorname{erf}}
+ \providecommand{\Si}{\operatorname{Si}}
+ \providecommand{\Ci}{\operatorname{Ci}}
+ \providecommand{\Ei}{\operatorname{Ci}}
+
+ % Function operators
+ \providecommand{\D}{\operatorname{d \!}\mathord{}}
+ \providecommand{\deriv}{\operatorname{D \!}\mathord{}}
+ \providecommand{\Res}{\operatorname*{Res}}
+
+ % Subscripted plus-or-minus / minus-or-plus sign
+ \providecommand{\pmm}[1]{\underset{\scriptscriptstyle\mathsf{(#1)}}{\pm}}
+ \providecommand{\mpm}[1]{\underset{\scriptscriptstyle\mathsf{(#1)}}{\mp}}
+
+ % Adjoint as a prefix operator (dagger)
+ \providecommand{\Adjoint}{\scalerel*{\dagger}{\textstyle\sum}}
+
+ % Named parameter
+ \providecommand{\param}[1]{{\scriptstyle #1 =}}
+
+ % Vectors (boldface)
+ \providecommand{\vc}[1]{\bm #1}
+
+ % Matrices (bold)
+ \providecommand{\mat}[1]{\vc{#1}}
+
+ % Operators (sans-serif)
+ \providecommand{\op}[1]{\mathsfx{#1}}
+ \providecommand{\bop}[1]{\mathbsfx{#1}}
+
+ % Equal by definition  :=  or  =:
+ \providecommand{\coloneqq}{:=}
+ \providecommand{\eqqcolon}{=:}
+ \providecommand{\defeq}{\coloneqq}
+ \providecommand{\eqdef}{\eqqcolon}
+
+ % Average  <___>
+ \providecommand{\avg}[1]{\langle #1 \rangle}
+ \providecommand{\Avg}[1]{\left\langle #1 \right\rangle}
+
+ % Absolute value  |___|
+ \providecommand{\abs}[1]{\lvert #1 \rvert}
+ \providecommand{\Abs}[1]{\left\lvert #1 \right\rvert}
+
+ % Norm  ||___||
+ \providecommand{\norm}[1]{\| #1 \|}
+ \providecommand{\Norm}[1]{\left\| #1 \right\|}
+
+ % Ceiling  |' ___ '|
+ \providecommand{\ceil}[1]{\lceil #1 \rceil}
+ \providecommand{\Ceil}[1]{\left\lceil #1 \right\rceil}
+
+ % Floor  |. ___ .|
+ \providecommand{\floor}[1]{\lfloor #1 \rfloor}
+ \providecommand{\Floor}[1]{\left\lfloor #1 \right\rfloor}
+
+ % Bra-vector  <___|
+ \providecommand{\bra}[1]{\langle #1 \rvert}
+ \providecommand{\Bra}[1]{\left\langle #1 \right\rvert}
+
+ % Ket-vector  |___>
+ \providecommand{\ket}[1]{\lvert #1 \rangle}
+ \providecommand{\Ket}[1]{\left\lvert #1 \right\rangle}
+
+ % Bra-ket  <___ | ___>
+ \providecommand{\braket}[2]{\langle #1 | #2 \rangle}
+ \providecommand{\Braket}[2]{\left\langle #1 \middle| #2 \right\rangle}
+
+ % Bra-ket with operator  <___ | ___ | ___>
+ \providecommand{\brakket}[3]{\langle #1 \rvert #2 \lvert #3 \rangle}
+ \providecommand{\Brakket}[3]{\left\langle #1 \middle\rvert
+     #2 \middle\lvert #3 \right\rangle}
+
+ % Commutator  [___, ___]
+ \providecommand{\comm}[2]{\bigl[#1, #2\bigr]}
+
+ % Anticommutator  {___, ___}
+ \providecommand{\acom}[2]{\bigl\{#1, #2\bigr\}}
+
+ % Normal-ordering  :___:
+ \providecommand{\normord}[1]{\mathopen:#1\mathclose:}
+ \providecommand{\Normord}[1]{\left:#1\right:}
+
+ % Big-O notation  O(___)
+ \providecommand{\bigO}[1]{\mathcal O ( #1 )}
+ \providecommand{\BigO}[1]{\mathcal O \left( #1 \right)}
+
+ % The macros \anh and \crt represent annihilation and creation operators
+ % respectively.  The optional argument specifies the symbol used to denote the
+ % operator (typically "a") while the required argument specifies the
+ % subscript.
+ \providecommand{\anh}[2][a]{\op{#1}_{#2}^{}}
+ \providecommand{\crt}[2][a]{\op{#1}_{#2}^\dagger}
+
+ % ----------------------------------------------------------------------------
+ %
+ % TikZ macros
+ % ===========
+
+ \RequirePackage{tikz}
+ \usetikzlibrary{calc, shapes}
+
+ % The \lcontr and \rcontr commands are used to display Wick contractions (the
+ % left and right parts, respectively).  The syntax is given by:
+ %
+ %     \lcontr{INDEX}{OPERATOR}
+ %     \rcontr[GAP]{INDEX}{OPERATOR}
+ %
+ % where:
+ %
+ % * INDEX is a unique number used to both identify and specify the height of
+ %   the contraction.  The number only needs to be unique within the same
+ %   product.  For best display, use natural numbers starting from one.
+ %
+ % * OPERATOR is the operator, e.g. \hat{a}.
+ %
+ % * GAP is the small gap between the operator and the end of the line.
+ %   Default value is 0.03.
+ %
+ % Note that this will require two TeX passes to be displayed properly.
+ %
+ \providecommand{\lcontr}[2]{
+   \tikz[baseline = (contraction-#1-left.base), remember picture]
+   \node[inner sep = 0] (contraction-#1-left) {\ensuremath{#2}};
+ }
+ \providecommand{\rcontr}[3][.03]{
+   \tikz[baseline = (contraction-#2-right.base), remember picture]
+   \node[inner sep = 0] (contraction-#2-right) {\ensuremath{#3}};
+   \pgfmathsetmacro{\contractionheight}{#2 * .1}
+   \pgfmathparse{#2 > 0 ? "north" : "south"}
+   \let\contractiondirection\pgfmathresult
+   \pgfmathparse{#2 > 0 ? #1 : -#1 - .1}
+   \let\contractionoffset\pgfmathresult
+   \begin{tikzpicture}[overlay, remember picture, thick]
+     \draw    ($ (contraction-#2-left.\contractiondirection)
+                 + (0, \contractionoffset) $)
+           -- ++($ (0, \contractionheight) $)
+           -| ($ (contraction-#2-right.\contractiondirection)
+                 + (0, \contractionoffset) $);
+   \end{tikzpicture}
+ }
+
+ % The \l* and \r* creation and annihilation operators are used for displaying
+ % the left and right parts of Wick contractions, respectively.  It requires an
+ % additional numeric argument used to identify the contraction.  For details,
+ % see \lcontr and \rcontr.
+ \providecommand{\lcrt}[3][a]{\lcontr{#3}{\op{#1}}^\dagger_{#2}}
+ \providecommand{\lanh}[3][a]{\lcontr{#3}{\op{#1}}^{}_{#2}}
+ \providecommand{\rcrt}[3][a]{\rcontr{#3}{\op{#1}}^\dagger_{#2}}
+ \providecommand{\ranh}[3][a]{\rcontr{#3}{\op{#1}}^{}_{#2}}
+
+ % Arrows (behaves similarly to \lcontr and \rcontr).
+ \providecommand{\larr}[2]{
+   \tikz[baseline = (arr-#1-left.base), remember picture]
+   \node[inner sep = 0] (arr-#1-left) {\ensuremath{#2}};
+ }
+ \providecommand{\rarr}[3][.03]{
+   \tikz[baseline = (arr-#2-right.base), remember picture]
+   \node[inner sep = 0] (arr-#2-right) {\ensuremath{#3}};
+   \pgfmathsetmacro{\arrheight}{#2 * .1}
+   \pgfmathparse{#2 > 0 ? "north" : "south"}
+   \let\arrdirection\pgfmathresult
+   \pgfmathparse{#2 > 0 ? #1 : -#1 - .1}
+   \let\arroffset\pgfmathresult
+   \begin{tikzpicture}[overlay, remember picture, thin, ->]
+     \draw ($ (arr-#2-left.\arrdirection) + (0, \arroffset) $)
+     to[bend left]
+     ($ (arr-#2-right.\arrdirection) + (0, \arroffset) $);
+   \end{tikzpicture}
+ }
+
+ % ----------------------------------------------------------------------------
+ %
+ % Spacing macros
+ % ==============
+
+ % Spacing used for aligning the start of an equation, e.g.
+ %       2 (a + b)
+ %     = 2 a + 2 b
+ % Here, insert \eqbegin at the start of the equation.
+ \providecommand{\eqbegin}{\mathrel{\phantom{=}}}
+
+ % Spacing used for continuing a line-break in an equation, e.g.
+ %     = 2 (a + b)
+ %       - 3 (x + y)
+ % Here, insert \eqcont right before the minus sign.
+ \providecommand{\eqcont}{\eqbegin{}}
+
+ % Invisible symbol used to align the height / position of sub- or superscripts.
+ \providecommand{\phprime}{\vphantom{'}}
+
+ % Real/imaginary part operators: \Re & \Im.  The original symbols (\Re & \Im)
+ % are remapped to \Resymb and \Imsymb respectively.
+ \let\Resymb\Re
+ \let\Imsymb\Im
+ \def\Re{\operatorname{Re}}
+ \def\Im{\operatorname{Im}}
+
+ % Misc. operators
+ \DeclareMathOperator\sgn{sgn}
+ \DeclareMathOperator\tr{tr}
+ \DeclareMathOperator\trace{tr}
+
+ % ----------------------------------------------------------------------------
+ %
+ % Colored tensor notation
+ % =======================
+
+ % Contracted index
+ \definecolor{ctrcolor}{rgb}{.4, .4, .4}
+ \providecommand{\ctr}[1]{\textcolor{ctrcolor}{#1}}
+
+ % 4-vectors (violet bold)
+ \definecolor{fvccolor}{rgb}{.4, .1, .7}
+ \providecommand{\fvc}[1]{\textcolor{fvccolor}{\bm{#1}}}
+ \providecommand{\fdot}{\mathbin{\fvc{\cdot}}}
+ \providecommand{\fvcop}[1]{\textcolor{fvccolor}{\mathbsfx{#1}}}
+
+ % rank-2 tensors in 4D (orange bold)
+ \definecolor{tncolor}{rgb}{.7, .2, .1}
+ \providecommand{\tn}[1]{\textcolor{tncolor}{\bm{#1}}}
+
+ % rank-2 tensors in 3D (cyan)
+ \definecolor{ttncolor}{rgb}{.1, .6, .6}
+ \providecommand{\ttn}[1]{\textcolor{ttncolor}{\bm{#1}}}
+
+ % 3-vectors (green)
+ \definecolor{tvccolor}{rgb}{0, .5, .3}
+ \providecommand{\tvc}[1]{\textcolor{tvccolor}{\bm{#1}}}
+ \providecommand{\tdot}{\mathbin{\tvc{\cdot}}}
+ \providecommand{\ttimes}{\mathbin{\tvc{\times}}}
+ \providecommand{\totimes}{\mathbin{\tvc{\otimes}}}
+ \providecommand{\tvcop}[1]{\textcolor{tvccolor}{\mathbsfx{#1}}}
+
+ % ----------------------------------------------------------------------------
+ %
+ % Theorem environments
+ % ====================
+
+ % define new styles with better spacing between title and contents
+ \RequirePackage[thmmarks]{ntheorem}
+ \makeatletter
+ \newtheoremstyle{break2}%
+ {\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont
+         ##1\ ##2\theorem@separator}\vskip1em\hbox{\strut}}}]}%
+ {\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont
+         ##1\ ##2\ (##3)\theorem@separator}\vskip1em\hbox{\strut}}}]}
+ \newtheoremstyle{nonumberbreak2}%
+ {\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont
+         ##1\theorem@separator}\vskip1em\hbox{\strut}}}]}%
+ {\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont
+         ##1\ (##3)\theorem@separator}\vskip1em\hbox{\strut}}}]}
+ \makeatother
+ \theoremstyle{break2}
+ \theoremindent2em
+ \theorembodyfont{}
+ \theorempreskipamount1em
+ \theorempostskipamount1em
+ \newtheorem{defn}{Definition}
+ \newtheorem{lem}{Lemma}
+ \newtheorem{cor}{Corollary}
+ \theoremstyle{nonumberbreak2}
+ \theoremsymbol{\ensuremath{_\blacksquare}}
+ \newtheorem{proof}{Proof}
+
+ % shortcuts for theorem references
+ \providecommand{\defref}[1]{Def.\ \ref{def:#1}}
+ \providecommand{\lemref}[1]{Lem.\ \ref{lem:#1}}
+ \providecommand{\corref}[1]{Cor.\ \ref{cor:#1}}
+
+ % ----------------------------------------------------------------------------
+ %
+ % Misc. colored environments
+ % ==========================
+
+ % Required for boxed equations
+ \RequirePackage{empheq}
+
+ % Colors the text and equations blue to indicate an answer
+ \definecolor{answercolor}{rgb}{0, .2, .7}
+ \newenvironment{answer}{\begingroup\color{answercolor}}{\endgroup}
+
+ % Final equation (in a shaded light-blue box)
+ \definecolor{finalboxcolor}{rgb}{.8, .9, 1}
+ \providecommand{\finalbox}[1]{%
+   \colorbox{finalboxcolor}{\hspace{1em}#1\hspace{1em}}}
+ \newenvironment{finalalign*}{\begingroup\empheq[box=\finalbox
+   ]{align*}}{\endempheq\endgroup}
+ \newenvironment{finalalign}{\begingroup\empheq[box=\finalbox
+   ]{align}}{\endempheq\endgroup}
+
+ % Other boxed equations
+ \definecolor{hicolor}{rgb}{1, .9, .6}
+ \providecommand{\himath}[1]{\colorbox{hicolor}{\ensuremath{\displaystyle
+       #1}}}
+ \definecolor{hicolordark}{rgb}{.8, .3, 0}
+ \providecommand{\hitext}[1]{\textcolor{hicolordark}{#1}}
+ \definecolor{resultboxcolor}{rgb}{.8, 1, .7}
+ \providecommand{\resultmath}[1]{\colorbox{resultboxcolor}{\ensuremath{\displaystyle
+       #1}}}
+ \definecolor{resultcolordark}{rgb}{.4, .8, 0}
+ \providecommand{\resulttext}[1]{\textcolor{resulcolordark}{#1}}
+ \newmdenv[
+     backgroundcolor=resultboxcolor,
+     innertopmargin=15,
+     linewidth=0
+ ]{result}
+
+ % Allow equations to break across pages (globally).
+ % For a local effect, wrap the macro inside \begingroup ... \endgroup.
+ \if@szAllowDisplayBreaks@
+   \allowdisplaybreaks
+ \fi
+EOF
+chmod 644 'sigilz/sigilz.math.sty'
+
+mkdir -p 'sigilz'
+sed "s/^ //" <<"EOF" >'sigilz/sigilz.sty'
+ % Package info
+ \def\@szName{sigilz}
+ \def\@szVersionMajor{0}
+ \def\@szVersionMinor{9}
+ \def\@szVersionPatch{0}
+
+ % Initialization
+ \def\@szVersion{\@szVersionMajor.\@szVersionMinor.\@szVersionPatch}
+ \NeedsTeXFormat{LaTeX2e}
+ \ProvidesPackage{\@szName}
+ \RequirePackage{xstring}
+
+ % ----------------------------------------------------------------------------
+ %
+ % Options
+ % =======
+
+ % The version may be specified using any one of the following formats:
+ %
+ %   #
+ %   #.#
+ %   #.#.#
+ %
+ % The major version is required to match exactly, since major revisions are
+ % not backward compatible.  The minor and patch versions shall be at least as
+ % high as the given version, since they are backward compatible.
+
+ % Package options
+ % ---------------
+
+ % Don't load the default packages
+ \newif\if@szNoPackages@\@szNoPackages@false
+ \DeclareOption{noPackages}{\@szNoPackages@true}
+
+ % Don't load sigilz.math
+ \newif\if@szNoMath@\@szNoMath@false
+ \DeclareOption{bm0}{\@szNoMath@true}
+
+ % Loads amssymb
+ \newif\if@szAmssymb@\@szAmssymb@false
+ \DeclareOption{amssymb}{\@szAmssymb@true}
+
+ % Font options
+ % ------------
+ % Note: Pick only one.
+
+ % Font: Kp-fonts
+ \newif\if@szFontKp@\@szFontKp@false
+ \DeclareOption{font.kp}{\@szFontKp@true}
+
+ % Font: GFS Neohellenic (text) / Kp-fonts (math)
+ \newif\if@szFontGfskp@\@szFontGfskp@false
+ \DeclareOption{font.gfskp}{\@szFontGfskp@true}
+
+ % Other options
+ % -------------
+
+ % Swap the variant and regular versions of the Greek letters
+ \newif\if@szSwapVarGreek@\@szSwapVarGreek@false
+ \DeclareOption{swapVarGreek}{\@szSwapVarGreek@true}
+
+ % Macro to check if the string is an integer (without any decimal points)
+ \providecommand{\IfInt}[3]{%
+   \IfSubStr{#1}{.}{%  decimal point
+     #3%
+   }{%
+     \IfStrEq{#1}{ }{% blank string
+       #3%
+     }{%
+       \IfInteger{#1}{#2}{#3}%
+     }%
+   }%
+ }
+
+ \DeclareOption*{
+   \newif\if@szUnknownOption@\@szUnknownOption@true
+
+   % Parse version number
+   \IfBeginWith{\CurrentOption}{v}{
+     \StrGobbleLeft{\CurrentOption}{1}[\@szReqVersion]
+   }{
+     \global\def\@szReqVersion{\CurrentOption}
+   }
+   \IfInt{\@szReqVersion}{
+     % Version is of the form: #
+     \global\def\@szReqVersionMajor{\@szReqVersion}
+     \global\def\@szReqVersionMinor{0}
+     \global\def\@szReqVersionPatch{0}
+     \@szUnknownOption@false
+   }{
+     \StrBefore{\@szReqVersion}{.}[\@szReqVersionMajor]
+     \IfInt{\@szReqVersionMajor}{
+       \StrBehind{\@szReqVersion}{.}[\@szReqVersionMinorPatch]
+       \IfInt{\@szReqVersionMinorPatch}{
+         % Version is of the form: #.#
+         \global\def\@szReqVersionMinor{\@szReqVersionMinorPatch}
+         \global\def\@szReqVersionPatch{0}
+         \@szUnknownOption@false
+       }{
+         \StrBefore{\@szReqVersionMinorPatch}{.}[\@szReqVersionMinor]
+         \StrBehind{\@szReqVersionMinorPatch}{.}[\@szReqVersionPatch]
+         \IfInt{\@szReqVersionMinor}{
+           \IfInt{\@szReqVersionPatch}{
+             % Version is of the form: #.#.#
+             \@szUnknownOption@false
+           }{}
+         }{}
+       }
+     }{}
+   }
+   \if@szUnknownOption@\else
+     % Check version
+     \ifnum\@szReqVersionMajor=\@szVersionMajor
+       \ifnum\@szReqVersionMinor>\@szVersionMinor
+         \PackageError{\@szName}{minor version not available; requested
+           [\CurrentOption] but only [\@szVersion] is available}{}
+       \else
+         \ifnum\@szReqVersionMinor=\@szVersionMinor
+           \ifnum\@szReqVersionPatch>\@szVersionPatch
+             \PackageError{\@szName}{patch version not available; requested
+               [\CurrentOption] but only [\@szVersion] is available}{}
+           \fi
+         \fi
+       \fi
+     \else
+       \PackageError{\@szName}{major version doesn't match; requested
+         [\CurrentOption] but only [\@szVersion] is available}{}
+     \fi
+   \fi
+
+   % Options for sigilz.math
+   \IfBeginWith{allowDisplayBreaks}{\CurrentOption}{%
+     \PassOptionsToPackage{\CurrentOption}{sigilz.math}
+     \@szUnknownOption@false
+   }{}
+
+   \if@szUnknownOption@
+     \PackageError{\@szName}{unknown option: `\CurrentOption'}{}
+   \fi
+ }
+ \ProcessOptions\relax
+ % ----------------------------------------------------------------------------
+ %
+ % Details
+ % =======
+
+ % Load packages
+ % -------------
+
+ \if@szNoPackages@\else
+   \RequirePackage{amsmath}              % AMS math utilities
+   \RequirePackage{booktabs}             % Tables
+   \RequirePackage{fancybox}             % Boxed equations
+   \RequirePackage{fancyhdr}             % Headers & footers
+   \RequirePackage{isomath}              % ISO math formatting
+   \RequirePackage{mdframed}             % Framed boxes
+   \RequirePackage{microtype}            % Microtypography
+   \RequirePackage{parskip}              % No paragraph indent
+   \RequirePackage{siunitx}              % SI units
+   \RequirePackage{subcaption}           % Subfigures
+   \RequirePackage{subdepth}             % Make subscripts appear at same place
+   \RequirePackage{tikz}                 % Drawing tools
+ \fi
+
+ % Symbols
+ % -------
+
+ % AMS Symbols
+ \if@szAmssymb@
+   \RequirePackage{amssymb}
+ \fi
+
+ % Math symbols
+ \if@szNoPackages@\else
+   \if@szNoMath@\else
+     \RequirePackage{sigilz.math}
+   \fi
+ \fi
+
+ % Load fonts
+ % ----------
+
+ % Font: Kp-fonts
+ \if@szFontKp@
+   \RequirePackage[T1]{fontenc}
+   \RequirePackage[noDcommand, nott, slantedGreeks]{kpfonts}
+   \renewcommand*\ttdefault{txtt}
+ \fi
+
+ % Font: GFS Neohellenic (text) / Kp-fonts (math)
+ \if@szFontGfskp@
+   \input{sigilz.gfskp}
+ \fi
+
+ % Bold fonts
+ % ----------
+
+ % Bold symbols package.  It may consume too many math alphabets, so by default
+ % the max # of fonts allowed is zero.  This may be overridden by the user for
+ % a faster compilation.  This package must loaded after the fonts.
+ \providecommand{\hmmax}{0}
+ \providecommand{\bmmax}{0}
+ \RequirePackage{bm}
+
+ % Page layout & style
+ % -------------------
+
+ % Set height of header
+ %\setlength{\headheight}{15pt}
+
+ % Note: previously had [includeheadfoot] (unsure why)
+ %\usepackage{geometry}
+ %\pagestyle{fancy}
+
+ % Equation numbering (with a diamond symbol)
+ \numberwithin{equation}{section}
+ \renewcommand{\theequation}{\textsf{\footnotesize
+     \ensuremath{\diamond}\arabic{equation}}}
+
+ % Utility macros
+ % --------------
+
+ % Defines the environment if it doesn't already exist.  Same syntax as
+ % `newenvironment`.  Original source:
+ %
+ %     http://tex.stackexchange.com/questions/20687
+ %
+ \def\provideenvironment{\@star@or@long\provide@environment}
+ \def\provide@environment#1{%
+   \@ifundefined{#1}%
+     {\def\reserved@a{\newenvironment{#1}}}%
+     {\def\reserved@a{\renewenvironment{sz@dummy@environ}}}%
+   \reserved@a
+ }
+ \def\sz@dummy@environ{}
+
+ % Prints the math fonts that are currently being used (to be used at the end
+ % of a document).
+ \providecommand{\PrintMathFonts}{%
+   \count255=0%
+   \loop\ifnum\count255<16%
+     (\the\count255:~\fontname\textfont\count255)%
+     \advance\count255 by 1%
+   \repeat
+ }
+
+ % Misc. tweaks
+ % ------------
+
+ % Allow large matrices
+ \setcounter{MaxMatrixCols}{50}
+
+ % Fix the spacing bug with delimiters
+ \let\originalleft\left
+ \let\originalright\right
+ \renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+ \renewcommand{\right}{\aftergroup\egroup\originalright}
+
+ % Let \eqref automatically append the "eq:"
+ \let\oldeqref\eqref
+ \renewcommand{\eqref}[1]{\oldeqref{eq:#1}}
+
+ % Swap the variant and regular versions of the Greek letters
+ \if@szSwapVarGreek@
+   \let\sztmp\epsilon
+   \let\epsilon\varepsilon
+   \let\varepsilon\sztmp
+   \let\sztmp\phi
+   \let\phi\varphi
+   \let\varphi\sztmp
+ \fi
+EOF
+chmod 644 'sigilz/sigilz.sty'
+
+mkdir -p 'sigilz'
+sed "s/^ //" <<"EOF" >'sigilz/sigilz.upgreek.sty'
+ \NeedsTeXFormat{LaTeX2e}
+ \ProvidesPackage{sigilz.upgreek}
+
+ % Upright Greek letters
+ % =====================
+ %
+ % Provides aliases for upright Greek letters (if they exist)
+
+ %% import Data.Char
+ %% greek = ["alpha", "beta", "gamma", "delta", "epsilon",
+ %%          "zeta", "eta", "theta", "iota", "kappa", "lambda",
+ %%          "mu", "nu", "xi", "omicron", "pi", "rho", "sigma",
+ %%          "tau", "upsilon", "phi", "chi", "psi", "omega"]
+ %% main = let f x = "\\providecommand{\\" ++ x ++ "up}{\\up" ++ x ++ "}\n" ++
+ %%                  "\\providecommand{\\up" ++ x ++ "}{\\" ++ x ++ "}\n" in
+ %%        putStr $ concat [f x ++ f (toUpper (head x) : tail x) | x <- greek]
+ \providecommand{\alphaup}{\upalpha}
+ \providecommand{\upalpha}{\alpha}
+ \providecommand{\Alphaup}{\upAlpha}
+ \providecommand{\upAlpha}{\Alpha}
+ \providecommand{\betaup}{\upbeta}
+ \providecommand{\upbeta}{\beta}
+ \providecommand{\Betaup}{\upBeta}
+ \providecommand{\upBeta}{\Beta}
+ \providecommand{\gammaup}{\upgamma}
+ \providecommand{\upgamma}{\gamma}
+ \providecommand{\Gammaup}{\upGamma}
+ \providecommand{\upGamma}{\Gamma}
+ \providecommand{\deltaup}{\updelta}
+ \providecommand{\updelta}{\delta}
+ \providecommand{\Deltaup}{\upDelta}
+ \providecommand{\upDelta}{\Delta}
+ \providecommand{\epsilonup}{\upepsilon}
+ \providecommand{\upepsilon}{\epsilon}
+ \providecommand{\Epsilonup}{\upEpsilon}
+ \providecommand{\upEpsilon}{\Epsilon}
+ \providecommand{\zetaup}{\upzeta}
+ \providecommand{\upzeta}{\zeta}
+ \providecommand{\Zetaup}{\upZeta}
+ \providecommand{\upZeta}{\Zeta}
+ \providecommand{\etaup}{\upeta}
+ \providecommand{\upeta}{\eta}
+ \providecommand{\Etaup}{\upEta}
+ \providecommand{\upEta}{\Eta}
+ \providecommand{\thetaup}{\uptheta}
+ \providecommand{\uptheta}{\theta}
+ \providecommand{\Thetaup}{\upTheta}
+ \providecommand{\upTheta}{\Theta}
+ \providecommand{\iotaup}{\upiota}
+ \providecommand{\upiota}{\iota}
+ \providecommand{\Iotaup}{\upIota}
+ \providecommand{\upIota}{\Iota}
+ \providecommand{\kappaup}{\upkappa}
+ \providecommand{\upkappa}{\kappa}
+ \providecommand{\Kappaup}{\upKappa}
+ \providecommand{\upKappa}{\Kappa}
+ \providecommand{\lambdaup}{\uplambda}
+ \providecommand{\uplambda}{\lambda}
+ \providecommand{\Lambdaup}{\upLambda}
+ \providecommand{\upLambda}{\Lambda}
+ \providecommand{\muup}{\upmu}
+ \providecommand{\upmu}{\mu}
+ \providecommand{\Muup}{\upMu}
+ \providecommand{\upMu}{\Mu}
+ \providecommand{\nuup}{\upnu}
+ \providecommand{\upnu}{\nu}
+ \providecommand{\Nuup}{\upNu}
+ \providecommand{\upNu}{\Nu}
+ \providecommand{\xiup}{\upxi}
+ \providecommand{\upxi}{\xi}
+ \providecommand{\Xiup}{\upXi}
+ \providecommand{\upXi}{\Xi}
+ \providecommand{\omicronup}{\upomicron}
+ \providecommand{\upomicron}{\omicron}
+ \providecommand{\Omicronup}{\upOmicron}
+ \providecommand{\upOmicron}{\Omicron}
+ \providecommand{\piup}{\uppi}
+ \providecommand{\uppi}{\pi}
+ \providecommand{\Piup}{\upPi}
+ \providecommand{\upPi}{\Pi}
+ \providecommand{\rhoup}{\uprho}
+ \providecommand{\uprho}{\rho}
+ \providecommand{\Rhoup}{\upRho}
+ \providecommand{\upRho}{\Rho}
+ \providecommand{\sigmaup}{\upsigma}
+ \providecommand{\upsigma}{\sigma}
+ \providecommand{\Sigmaup}{\upSigma}
+ \providecommand{\upSigma}{\Sigma}
+ \providecommand{\tauup}{\uptau}
+ \providecommand{\uptau}{\tau}
+ \providecommand{\Tauup}{\upTau}
+ \providecommand{\upTau}{\Tau}
+ \providecommand{\upsilonup}{\upupsilon}
+ \providecommand{\upupsilon}{\upsilon}
+ \providecommand{\Upsilonup}{\upUpsilon}
+ \providecommand{\upUpsilon}{\Upsilon}
+ \providecommand{\phiup}{\upphi}
+ \providecommand{\upphi}{\phi}
+ \providecommand{\Phiup}{\upPhi}
+ \providecommand{\upPhi}{\Phi}
+ \providecommand{\chiup}{\upchi}
+ \providecommand{\upchi}{\chi}
+ \providecommand{\Chiup}{\upChi}
+ \providecommand{\upChi}{\Chi}
+ \providecommand{\psiup}{\uppsi}
+ \providecommand{\uppsi}{\psi}
+ \providecommand{\Psiup}{\upPsi}
+ \providecommand{\upPsi}{\Psi}
+ \providecommand{\omegaup}{\upomega}
+ \providecommand{\upomega}{\omega}
+ \providecommand{\Omegaup}{\upOmega}
+ \providecommand{\upOmega}{\Omega}
+EOF
+chmod 644 'sigilz/sigilz.upgreek.sty'

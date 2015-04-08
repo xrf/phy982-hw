@@ -1,0 +1,51 @@
+% Packages
+\usepackage[0.9, font.kp, swapVarGreek]{sigilz}
+\usepackage{hyperref}
+\usepackage{url}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+% Header
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\lhead{Adam Jones and Fei Yuan}
+\chead{PHY982}
+\marginparsep=2cm
+
+% Environments
+\definecolor{correctioncolor}{rgb}{.7, .2, 0}
+\provideenvironment{correction}{\begingroup\color{correctioncolor}}{\endgroup}
+\provideenvironment{valigntop}%
+{\begin{minipage}[t]{\textwidth}\vspace{0pt}}%
+{\vspace{0pt}\end{minipage}}
+
+% Commands
+\providecommand{\Dom}{\operatorname{Dom}}
+\providecommand{\Roots}{\operatorname{Roots}}
+\providecommand{\pvint}{\fint}
+\providecommand{\integral}{\mathop{\textstyle\int}}
+\providecommand{\ointegral}{\mathop{\textstyle\oint}}
+\def\oint{\ointctrclockwise}
+
+% note: \textcolor for fg; \colorbox for bg
+\definecolor{rescolor}{rgb}{.8, .9, 1}
+\newcommand{\resmath}[1]{\colorbox{rescolor}{\ensuremath{\displaystyle
+      #1}}}
