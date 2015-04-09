@@ -18,6 +18,25 @@ Dependencies
 
             cabal install --dependencies-only
 
+  - [OpenSSH](http://openssh.com).  You must be able to log into `fishtank`
+    without entering any password.  The easiest way to do this is via a shared
+    connection (you can also use public key authentication, but it's more
+    involved).  To configure this, append this to the bottom of
+    `~/.ssh/config`:
+
+        Host fishtank
+        User ???
+        ControlMaster auto
+        ControlPath ~/.ssh/control:%h:%p:%r
+
+    (Replace `???` with your actual username.)  Then, open a new terminal and
+    log into `fishtank` and make sure it stays open.  Now, any future
+    connections to `fishtank` will reuse this connection, without asking for
+    any password.
+
+    If this is not set up correctly, you will see a `Permission denied (…).`
+    error whenever the `tools/fresco` is run.
+
 ### Plotting
 
   - [R](http://r-project.org) with the following packages:

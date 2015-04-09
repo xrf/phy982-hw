@@ -1,9 +1,10 @@
 #!/bin/sh
+set -e
 remote=fishtank
 name=sfresco
-ssh "$remote" sh -c "
+ssh -o BatchMode=yes "$remote" sh -c "
 mkdir -p tmp/$name
 cd tmp/$name
 /user/nunes/bin/x86_64/$name
 "
-scp -r "$remote:tmp/$name/*" .
+scp -o BatchMode=yes -r "$remote:tmp/$name/*" .
