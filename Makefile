@@ -72,3 +72,8 @@ hw2.pdf: \
     hw2-Ni60-p-elastic-low-vol-re.pdf \
     hw2-p60Ni-OMP108-Smat.pdf
 	tools/texc $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
+
+# ----------------------------------------------------------------------------
+
+hw3.pdf: hw3.tex common.tex
+	tools/texc $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf

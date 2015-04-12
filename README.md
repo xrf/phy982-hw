@@ -1,3 +1,21 @@
+PHY982 homework
+===============
+
+Group homework for [PHY982][1] by Adam Jones and Fei Yuan.
+
+Building
+--------
+
+First off, make sure you have all the dependencies listed in the next section.
+
+Then, to build every homework, just run:
+
+    make all
+
+If you only want to build one of them, say HW2, run:
+
+    make hw2.pdf
+
 Dependencies
 ------------
 
@@ -80,15 +98,14 @@ Dependencies
       - subcaption
       - subdepth
       - tikz
-      - tikz
       - xstring
-
       - color
       - listings
       - hyperref
       - url
-
       - plus an additional meta package via:
 
             ( cd "$HOME/texmf/tex/latex" && sh ) <tools/sigilz.shar
             texhash
+
+[1]: https://people.nscl.msu.edu/~nunes/phy982

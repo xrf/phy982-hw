@@ -1,0 +1,64 @@
+\documentclass[fleqn, 12pt]{article}
+\input{common}
+\rhead{HW3}
+\begin{document}
+
+\begin{enumerate}
+
+\item %1
+
+\item %2
+
+\item %3
+
+\item %4
+
+\item %5
+
+\item %6
+
+\item %7
+
+\item Let
+  \begin{itemize}
+  \item the nucleus have a gaussian density distribution
+    $\rho(r) = N \E^{-(r / R_{\text T})^2}$ with radius $R_{\text T}$, and
+  \item the NN interaction is given by a Yukawa form
+    $V_{\text{NN}}(r) = V_0 \E^{-\mu r} / (\mu r)$
+  \end{itemize}
+  We wish to find the folded potential for the effective interaction between
+  the nucleon and the target.
+
+  First we use the definition of a folded potential as a convolution between
+  the density and the interaction:
+  \begin{align*}
+    U(s)
+    &= \int_{\Real^3} \rho(|\bm r - \bm s|) V_{\text{NN}}(r) \D \bm r \\
+    &= \int_{\Real^3} N \E^{-(\bm r - \bm s)^2/R_{\text T}^2} V_0 \frac{\E^{-\mu r}}{\mu r} \D \bm r
+  \end{align*}
+  Defining $\tilde N \equiv N R_{\text T} \sqrt\PI$ and
+  $\tilde \mu \equiv \mu R_{\text T}$, we have
+  \begin{align*}
+    U(R_{\text T} s)
+    &= \frac{\tilde N V_0}{\sqrt\PI \tilde\mu}
+      \int_{\Real^3} \E^{-(\bm r - \bm s)^2} \frac{\E^{-\tilde\mu r}}{r} \D \bm r
+    \\
+    &= \frac{\tilde N V_0}{\sqrt\PI \tilde\mu} \int_{\Real^3} \E^{-r^2 + 2 \bm r \cdot \bm s - s^2 - \tilde\mu r} r^{-1} \D \bm r
+    \\
+    &= \frac{\tilde N V_0}{\sqrt\PI \tilde\mu} \int_0^\infty \int_0^\PI \E^{-r^2 + 2 r s \cos \theta - s^2 - \tilde\mu r} 2 \PI r \sin \theta \D \theta \D r
+    \\
+    &= \frac{\sqrt\PI \tilde N V_0}{\tilde\mu s} \int_0^\infty \E^{-r^2 - \tilde\mu r - s^2} \int_0^\PI 2 r s \E^{2 r s \cos \theta} \sin \theta \D \theta \D r
+    \\
+    &= \frac{\sqrt\PI \tilde N V_0}{\tilde\mu s} \int_0^\infty \E^{-r^2 - \tilde\mu r - s^2} \left.\E^{2 r s \cos \theta}\right|_{\theta=-1}^{\theta=1} \D r
+    \\
+    &= \frac{\sqrt\PI \tilde N V_0}{\tilde\mu s} \int_0^\infty \E^{-r^2 - \tilde\mu r - s^2} \sum_{\sigma = \pm} \sigma \E^{2 r s \sigma} \D r
+    \\
+    &= -\frac{\sqrt\PI \tilde N V_0}{\tilde\mu s} \sum_{\sigma = \pm} \sigma \int_0^\infty \E^{-r^2 - 2 (\tilde\mu / 2 + \sigma s) r - s^2}\D r
+    \\
+    &= -\frac{\PI \tilde N V_0}{2 \tilde\mu s} \E^{(\tilde\mu / 2)^2} \sum_{\sigma  = \pm} \sigma \E^{\sigma \tilde\mu s} \operatorname{erfc}\left(\frac{\tilde\mu}{2} + \sigma s\right)
+  \end{align*}
+where $\operatorname{erfc}$ is the complementary error function.
+
+\end{enumerate}
+
+\end{document}
