@@ -1,5 +1,4 @@
 from os.path import join
-from subprocess import check_call
 
 '''A file object to `/dev/null`.'''
 import os as _os
@@ -137,8 +136,9 @@ def format_pairs(kvs):
 
 def run_with_argv(funcs):
     import sys
-    func_map = dict((f.__name__, f) for f in funcs)
-    func_map[sys.argv[1]](*sys.argv[2:])
+    if len(sys.argv) > 1:
+        func_map = dict((f.__name__, f) for f in funcs)
+        func_map[sys.argv[1]](*sys.argv[2:])
 
 def parse_table(s):
     from io     import StringIO
@@ -160,3 +160,73 @@ def replace_ext(fn, ext):
 
 def record_to_dict(x):
     return dict(zip(x.dtype.names, x))
+
+def sh_escape(s):
+    return "'" + s.replace("'", "'\\''") + "'"
+
+def check_call_with_input(args, input, **kwargs):
+    from subprocess import CalledProcessError, PIPE, Popen
+    p = Popen(args, stdin=PIPE, **kwargs)
+    p.communicate(input)
+    if p.returncode != 0:
+        raise CalledProcessError(p.returncode, args, None)
+
+def ssh(remote, args, input=None):
+    from subprocess import check_output, STDOUT
+    full_args = ["ssh", "-o", "BatchMode=yes", remote]
+    full_args.extend(args)
+    return check_output(full_args, input=input, stderr=STDOUT)
+
+def scp(paths):
+    from subprocess import check_call
+    full_args = ["rsync", "-P", "-e", "ssh -o BatchMode=yes", "-r"]
+    full_args.extend(paths)
+    check_call(full_args)
+
+# ----------------------------------------------------------------------------
+
+# fine structure constant
+ALPHA = 7.29735257e-3
+
+# hbar * c /(MeV fm)
+HBAR_C = 197.326972
+
+CHARGE = {
+    "n": 0,
+    "p": 1,
+}
+
+REMOTE = "fishtank"
+
+def rutherford_dcs(angle, E, z=1, Z=1):
+    '''(deg, MeV, 1, 1) -> mb/sr'''
+    from numpy import sin, pi
+    return 10. / 16. * (ALPHA * z * Z * HBAR_C /
+                        (E * sin(angle / 360. * pi) ** 2)) ** 2
+
+def maybe_rutherford_dcs(angle, E, z=1, Z=1):
+    '''(deg, MeV, 1, 1) -> mb/sr | 1
+
+    If the charge product is nonzero, then the Rutherford differential cross
+    section is returned.  Otherwise, one is returned.'''
+    from numpy import where
+    return where(z * Z != 0, rutherford_dcs(angle, E, z, Z), 1.)
+
+def maybe_divide_rutherford(data):
+    '''~{
+        "angle":             deg,
+        "energy":            MeV,
+        "target_charge":     1,
+        "projectile_charge": 1,
+        [+]"rdcs":           mb/sr | 1,
+        [+]"rdcs_err":       mb/sr | 1,
+    } -> None
+
+    Divide out the Rutherford differential cross section unless the projectile
+    is neutral.  The given dataframe is modified to store the result.'''
+    from numpy import where
+    rfdcs = maybe_rutherford_dcs(
+        data["angle"], data["energy"],
+        data["target_charge"], data["projectile_charge"])
+    data["rdcs"]     = data["dcs"]     / rfdcs
+    data["rdcs_err"] = data["dcs_err"] / rfdcs

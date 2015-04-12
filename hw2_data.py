@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 from numpy import sqrt
 from pandas import concat
-from hw2 import *
+from common import *
+
+projectile_mass   = 1
+projectile_j      = 1/2.
+projectile_parity = +1
+target        = "Ni60"
+target_mass   = 60
+target_charge = 28
+target_j      = 0
+target_parity = +1
+J_max         = 50
+R_match       = 60
 
 datasets = []
 
@@ -136,17 +147,30 @@ datasets.append(data)
 # ----------------------------------------------------------------------------
 
 data = concat(datasets)
+data["origin"] = "expt"
 data["target_charge"] = target_charge
-data["projectile_charge"] = data["projectile"].map(CHARGES)
+data["projectile_charge"] = data["projectile"].map(CHARGE)
 
-# divide out the Rutherford differential cross section (except for neutrons)
-rfdcs = maybe_rutherford_dcs(
-    data["angle"], data["energy"],
-    data["target_charge"], data["projectile_charge"])
-data["rdcs"]     = data["dcs"]     / rfdcs
-data["rdcs_err"] = data["dcs_err"] / rfdcs
+maybe_divide_rutherford(data)
 
 # save only the columns we care about
-data = data[["projectile", "energy",
-             "angle", "angle_err", "rdcs", "rdcs_err"]]
-write_table(replace_ext(__file__, ".dat"), data)
+expt_data = data[["origin", "projectile", "energy", "angle", "angle_err",
+                  "dcs", "dcs_err", "rdcs", "rdcs_err"]]
+
+# ============================================================================
+# optical model parameters
+# ============================================================================
+
+#https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=4100&E1=8.2&E2=8.2
+#https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=4102&E1=55&E2=55
+#https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=401&E1=5&E2=5
+#https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=100&E1=24&E2=24
+params = parse_table("""
+projectile energy Vvr rvr avr Wvi rvi avi Vsr rsr asr Wsi rsi asi Vor ror aor Woi roi aoi rc
+p   8.2   53.5  1.25  0.65    0.0  0.00  0.00    0.0  0.00  0.00   13.5  1.25  0.47    7.5  1.25  0.47    0.0  0.00  0.00   1.25
+p  55.0   42.4  1.16  0.75    6.2  1.37  0.37    0.0  0.00  0.00    2.5  1.37  0.37    6.0  1.06  0.78    0.0  0.00  0.00   1.25
+n   5.0   45.6  1.29  0.66    0.0  0.00  0.00    0.0  0.00  0.00    9.3  1.25  0.48    7.0  1.29  0.66    0.0  0.00  0.00   0.00
+n  24.0   47.0  1.17  0.75    3.7  1.26  0.58    0.0  0.00  0.00    6.2  1.26  0.58    6.2  1.01  0.75    0.0  0.00  0.00   0.00
+""")
+
+# ----------------------------------------------------------------------------

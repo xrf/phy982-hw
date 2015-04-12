@@ -7,19 +7,40 @@
 
 \begin{enumerate}
 
-\item We choose ${}^{60}_{28} \mathrm{Ni}$ as the target nucleus.  The entrance
-  partition consists of the ground states of the nuclei:
+\item We choose ${}^{60}_{28} \mathrm{Ni}$ as the target nucleus.  The
+  entrance partition consists of the ground states of the nuclei:
   \begin{itemize}
   \item For ${}^{60}_{28} \mathrm{Ni}$, the state is $0^+$.
-  \item For ${}^{1}_{1} \mathrm{p}$, the state is $1/2^+$.
+  \item For ${}^{1}_{1} \mathrm{p}$ or ${}^{1}_{0} \mathrm{n}$, the state is
+    $1/2^+$.
   \end{itemize}
 
 \item Group directory: \verb|/projects/phy982/Group_AJ_FY|
 
-\item \verb|projects/phy982/Group_AJ_FY/p-ni60-elastic.in| contains:
+\item \verb|projects/phy982/Group_AJ_FY/Ni60-p-elastic-low.in| contains:
 
   \begin{lstlisting}
-    [[todo]]
+Fresco;
+NAMELIST
+ &FRESCO hcm=0.1 rmatch=60
+         jtmin=0.0 jtmax=50.0  absend=0.001
+         thmin=0.0 thmax=180.0 thinc=1.0
+         chans=1 smats=2 xstabl=1
+         elab(1:1)=8.2 /
+ &PARTITION namep='p' massp=1 zp=1
+            namet='Ni60' masst=60 zt=28
+            qval=0 nex=1  /
+ &STATES jp=0.5 bandp=1 ep=0.0
+         jt=0 bandt=1 et=0.0
+         cpot=1 /
+ &partition /
+ &POT ap=1 at=60 kp=1 rc=1.25 type=0 /
+ &POT kp=1 p1=53.5 p2=1.25 p3=0.65 type=1 /
+ &POT kp=1 p4=13.5 p5=1.25 p6=0.47 type=2 /
+ &POT kp=1 p1=7.5 p2=1.25 p3=0.47 type=3 /
+ &pot /
+ &overlap /
+ &coupling /
   \end{lstlisting}
 
 \item Without the nuclear interaction, there would be only Coulomb
@@ -33,7 +54,262 @@
     is the Fourier transform of the charge distribution into momentum space.
   \end{itemize}
 
-\item
+\item We chose to use optical model parameters from RIPL-3 as suggested by the
+  instructions.  Due to the large difference in energy, we needed to use
+  different optical models for each of the 4 cases:
+  $(\mathrm p, \mathrm n) \times (E_{\text{low}}, E_{\text{high}})$.
+
+  These are the projectiles and energies we used:
+  \begin{itemize}
+  \item p, $8.2\,\mathrm{MeV}$
+  \item p, $55.0\,\mathrm{MeV}$
+  \item n, $5.0\,\mathrm{MeV}$
+  \item n, $24.0\,\mathrm{MeV}$
+  \end{itemize}
+
+  We picked general optical models -- i.e.\ ones that are not specifically
+  optimized for Ni-60.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-1.pdf}
+    \caption{Comparison between theoretical and experimental differential
+      cross sections.  Shown on top of each subplot are the energies and
+      projectile respectively.  The cross sections for proton scattering are
+      relative to the (point-particle) Rutherford cross section.}
+    \label{fig:compare}
+  \end{figure}
+
+  The ones we used were (with their IDs):
+  \begin{itemize}
+  \item p, low-energy:
+    (4100) F.\ G.\ Perey, \textit{Phys.\ Rev.}\ \textbf{131}, p.\ 745, 1963.
+    \url{https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=4100&E1=8.2&E2=8.2}
+  \item p, high-energy:
+    (4102) J.\ J.\ H.\ Menet, E.\ E.\ Gross, J.\ J.\ Malanify, and A.\ Zucker,
+    \textit{Phys.\ Rev.}\ \textbf{C4}, p.\ 1114, 1971.
+    \url{https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=4102&E1=55&E2=55}
+  \item n, low-energy:
+    (401) D.\ Wilmore and P.\ E.\ Hodgson,
+    \textit{Nucl.\ Phys.}\ \textbf{55}, p.\ 673, 1964.
+    \url{https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=401&E1=5&E2=5}
+  \item n, high-energy:
+    (100) F.\ D.\ Becchetti, Jr.\ and G.\ W.\ Greenlees,
+    \textit{Phys.\ Rev.}\ \textbf{182}, p.\ 1190, 1969.
+    \url{https://www-nds.iaea.org/cgi-bin/ripl_om_param.pl?Z=28&A=60&ID=100&E1=24&E2=24}
+  \end{itemize}
+
+  In every calculation, to ensure convergence, we double $J_{\text{max}}$ and
+  also $R_{\text{match}}$ (separately) and check that no noticeable
+  differences appear in the results.
+
+  When we compared the theoretical results with the experimental data, we find
+  that the match is rather poor.  See Figure \ref{fig:compare}.
+
+\item With the imaginary potential, we find that the S-matrix amplitude does
+  not equal to one in many of the partial waves (especially those with lower
+  orbital angular momentum).  Without it, the S-matrix amplitude is uniformly
+  one in every partial wave.  We plot the S-matrix values in order of their
+  output from Fresco in Figure \ref{fig:s-matrix}.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-p60Ni-OMP108-Smat.pdf}
+    \caption{S-matrix output from Fresco.}
+    \label{fig:s-matrix}
+  \end{figure}
+
+  We also note that for the higher energies the S-matrix appears to be lower,
+  indicating that reactions are more likely to occur at the higher energies.
+
+\item To see the effect of the radius, we increased every radial parameters
+  within the input file by $50\%$ (simultaneously).  We find that this noticeably
+  increases the number of oscillations in the differential cross section along
+  the angle axis.  This is expected since the cross section is in effect a
+  diffraction pattern in momentum space, which scales inversely with distance.
+  See Figure \ref{fig:radius}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-1-large-radius.pdf}
+    \caption{Effect of large radius parameters.}
+    \label{fig:radius}
+  \end{figure}
+
+\item As noted earlier, the general optical model describes the data rather
+  poorly.  The oscillations do not line up properly, and the magnitudes are
+  off a bit as well.  Though, it is of the right order of magnitude, at least.
+
+\item The calculations are once again repeated for the neutrons.  They are
+  also in Figure \ref{fig:compare}.
+
+  We find that the neutron cross section calculations are extremely poor: the
+  magnitude is about 1 to 2 orders of magnitude off.  The only thing that it
+  (kind of) gets right is the decreasing trend as the angle increases.
+
+\item Total cross sections for neutron scattering:
+
+  \begin{itemize}
+  \item low energy ($5\,\mathrm{MeV}$):
+    \begin{itemize}
+    \item total: $192.6\,\mathrm{mb}$
+    \item absorption: $101.1\,\mathrm{mb}$
+    \end{itemize}
+
+  \item high energy ($24\,\mathrm{MeV}$):
+    \begin{itemize}
+    \item total: $89.3\,\mathrm{mb}$
+    \item absorption: $50.0\,\mathrm{mb}$
+    \end{itemize}
+  \end{itemize}
+
+\end{enumerate}
+
+\subsection*{Part II}
+
+\begin{enumerate}
+
+\item We consider the case in Part I and use the data from the NNCD database.
+  In particular, we used the following in our plots earlier:
+
+  \begin{itemize}
+  \item p:
+    \begin{itemize}
+    \item $8.2\,\mathrm{MeV}$:
+      (O0446003) S.\ Kobayashi, K.\ Matsuda, Y.\ Nagahara, Y.\ Oda, and N.\ Yamamuro.,
+      \textit{J.\ of Physical Society of Japan} \textbf{15}, p.\ 1151, 1960.
+      \url{http://www.nndc.bnl.gov/exfor/servlet/X4sGetReacTabl?reqx=20613&subID=240446003}
+    \item $55.0\,\mathrm{MeV}$:
+      (E1948002) M.\ Koike, K.\ Matsuda, I.\ Nonaka, Y.\ Saji, K.\ Yagi,
+      H.\ Ejiri, Y.\ Ishizaki, Y.\ Nakajima, and E.\ Tanaka.,
+      \textit{J.\ of Physical Society of Japan} \textbf{21} (11), p.\ 2103, 1966.
+      \url{http://www.nndc.bnl.gov/exfor/servlet/X4sGetReacTabl?reqx=20613&subID=141948002}
+    \end{itemize}
+  \item n:
+    \begin{itemize}
+    \item $5.0\,\mathrm{MeV}$
+      (40572003) I.\ A.\ Korzh, V.\ P.\ Lunev, V.\ A.\ Mishchenko,
+      E.\ N.\ Mozhzhukhin, M.\ V.\ Pasechnik, and N.\ M.\ Pravdivyy,
+      \textit{5th All-Union Conf.\ on Neutron Phys.}\ \textbf{1}, p.\ 314, 15-19 Sep 1980.
+      \url{http://www.nndc.bnl.gov/exfor/servlet/X4sGetReacTabl?reqx=20823&subID=40572003}
+    \item $24.0\,\mathrm{MeV}$
+      (10953004) Y.\ Yamanouti, J.\ Rapaport, S.\ M.\ Grimes, V.\ Kulkarni,
+      R.\ W.\ Finlay, D.\ Bainum, P.\ Grabmayr, and G.\ Randers-Pehrson,
+      \textit{Conf.\ on Nucl.\ Cross Sections} p.\ 146, F.\ Techn., Knoxville, 1979.
+      \url{http://www.nndc.bnl.gov/exfor/servlet/X4sGetReacTabl?reqx=20823&subID=10953004}
+    \end{itemize}
+  \end{itemize}
+
+  For the rest of this report, we focus on the low-energy proton scattering case.
+
+\item We start by fitting the $V$, $r$, and $a$ of the real volume potential,
+  using the global potential parameters as the initial guess:
+  $53.5\,\mathrm{MeV}$, $1.25\,\mathrm{nm}$ and $0.65\,\mathrm{nm}$
+  respectively.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-Ni60-p-elastic-low-vol-re.pdf}
+    \caption{Comparison of fit against data (real volume term).}
+    \label{fig:low-vol-re}
+  \end{figure}
+
+  The $V$, by itself, does not improve the fit by much.  So we start by
+  allowing $a$ to change and the minimum was found to be $0.55\,\mathrm{nm}$.
+
+  Then we allow $r$ to change.  This causes $a$ to decrease even further to
+  $0.29\,\mathrm{nm}$, which seems rather unphysical.  The $r$ is optimized to
+  be $1.39\,\mathrm{nm}$.
+
+  Finally we allow all 3 parameters to change, producing the final result of
+  $84.6\,\mathrm{MeV}$, $1.03\,\mathrm{nm}$ and $0.59\,\mathrm{nm}$
+  respectively.  The depth is quite a bit larger and the radius is noticeably
+  smaller, while the diffusivity is slighter lower than usual.  The fit is
+  shown in Figure \ref{fig:low-vol-re}.
+
+  This fit, while noticeably better than in Part I (peaks and troughs are
+  decently aligned; original fit had $\chi^2 = 297$), is far from perfect.
+  $\chi^2 = 45$ for this fit, and the region near low angles is still poorly
+  fitted.
+
+\item We tweaked the initial values of the three parameters by $10\%$
+  separately and refitted in the same manner.  Here is how they changed the
+  fit results:
+  \begin{itemize}
+  \item changing $V$: fitted $V$ becomes $83.2\,\mathrm{MeV}$ instead.
+  \item changing $r$: the values remain within $0.1$ of the original (in their
+    respective units).
+  \item changing $a$: fitted $V$ becomes $68.5\,\mathrm{MeV}$, $r$ becomes
+    $0.75\,\mathrm{nm}$, and $a$ beccomes $0.20\,\mathrm{nm}$.
+  \end{itemize}
+  From this we see that $a$ is very sensitive to the initial value, while the
+  other two are not very sensitive (with $r$ being the least sensitive).
+
+\item (Note: there is no volume imaginary component for this particular
+  model.)  Now we do the same for the surface imaginary term, also using the
+  global potential as initial values.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-Ni60-p-elastic-low-surf-im.pdf}
+    \caption{Comparison of fit against data (imaginary surface term).}
+    \label{fig:low-surf-im}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-Ni60-p-elastic-low-both.pdf}
+    \caption{Comparison of fit against data (both volume and surface term).}
+    \label{fig:low-both}
+  \end{figure}
+
+  In this case, the fit in Figure \ref{fig:low-surf-im} is not as good as the
+  one for the real volume potential.  The fitted parameters are:
+  $W = 22.7\,\mathrm{MeV}$, $r = 1.3\,\mathrm{nm}$, and
+  $a = 0.55\,\mathrm{nm}$.  We find that $\chi^2 = 113$, worse than before.
+
+  We also tested the sensitivity of these parameters with the same technique
+  as before, and found that the final parameters did not change very much for
+  any of the 3 parameters (worst was about $0.5\,\mathrm{MeV}$ for $W$).  With
+  this, we conclude that these 3 parameters, while they do not improve the fit
+  as much, are more reliably pinned than the volume parameters.
+
+  If we fit with both volume and surface terms, we obtain the result in Figure
+  \ref{fig:low-both}.  The parameters are: $V_{\text v} = 89.2\,\mathrm{MeV}$,
+  $r_{\text v} = 1.0\,\mathrm{nm}$, $a_{\text v} = 0.57\,\mathrm{nm}$,
+  $W_{\text s} = 25.2\,\mathrm{MeV}$, $r_{\text s} = 1.2\,\mathrm{nm}$, and
+  $a_{\text s} = 0.26\,\mathrm{nm}$.  We find that $\chi^2 = 31$, somewhat
+  better than with only volume.
+
+\item Finally, we repeat this with the real spin-orbit term, as plotted in
+  \ref{fig:low-spinorb}.  The fit has been improved slightly, but the small
+  angle region is still way off.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw2-Ni60-p-elastic-low-spinorb.pdf}
+    \caption{Comparison of fit against data (all 3 terms).}
+    \label{fig:low-spinorb}
+  \end{figure}
+
+  The fitted parameters are:
+  \begin{align*}
+    V_{\text v} = 95.2\,\mathrm{MeV} \\
+    r_{\text v} = 1.04\,\mathrm{nm} \\
+    a_{\text v} = 0.36\,\mathrm{nm} \\
+    W_{\text s} = 8.8\,\mathrm{MeV} \\
+    r_{\text s} = 0.99\,\mathrm{nm} \\
+    a_{\text s} = 0.43\,\mathrm{nm} \\
+    V_{\text o} = 11.7\,\mathrm{MeV} \\
+    r_{\text o} = 1.25\,\mathrm{nm} \\
+    a_{\text o} = 0.11\,\mathrm{nm}
+  \end{align*}
+  We find that $\chi^2 = 24$, a small but noticeable improvement.  In our
+  attempts we found that $a_{\text o}$ was adjusted to an unphysical negative
+  value, thus we constrained its value to be positive.  Despite this,
+  $0.11\,\mathrm{nm}$ is still frighteningly low, indicating that the fit
+  needs further manual adjustments from an expert who actually knows what they
+  are doing.
 
 \end{enumerate}
 
