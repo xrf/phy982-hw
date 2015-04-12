@@ -1,0 +1,220 @@
+\documentclass[fleqn, 12pt]{article}
+\input{common}
+\lhead{Fei Yuan (with Adam Jones)}
+\rhead{HW1}
+\begin{document}
+
+\subsection*{Setup}
+
+Consider the \textsuperscript{11}Be halo nucleus, in which the effective
+nuclear interaction between the neutron and \textsuperscript{10}Be is of a
+Woods-Saxon form:
+\begin{align*}
+V(R) = \frac{V_0}{1 + \exp((R - R_{\text{ws}}) / a_{\text{ws}})}
+\end{align*}
+where
+\begin{itemize}
+\item $V_0 = -61.1\,\mathrm{MeV}$ is the depth of the interaction;
+\item $a_{\text{ws}} = 0.65\,\mathrm{fm}$ is the diffuseness;
+\item $R_{\text{ws}} = 1.2 A^{1/3}\,\mathrm{fm}$ is the radius;
+\item $A = 10$ is the mass number of the core;
+\item $\mu = 0.0478450 \hbar^2 / (2\,\mathrm{MeV}\,\mathrm{fm}^2)$
+  is the reduced mass.
+\end{itemize}
+
+\subsection*{Answers}
+
+\begin{enumerate}
+
+\item Given the typical shell structure: $1\mathrm s_{1/2}$,
+  $1\mathrm p_{3/2}$, $1\mathrm p_{1/2}$, $1\mathrm d_{5/2}$,
+  $2\mathrm s_{1/2}$, $1\mathrm d_{3/2}$, etc., one would naively expect the
+  valence neutron to be in the $1\mathrm p_{1/2}$ orbital since both
+  $1\mathrm s_{1/2}$ and $1\mathrm p_{3/2}$ are completely filled.  However,
+  \textsuperscript{11}Be is a halo nucleus, so this simple picture would not
+  hold very well.  Likely due to the weakness of the interaction between the
+  core and the valence nucleon, the spacing between major shells is lower than
+  usual, causing the $2\mathrm s_{1/2}$ state to intrude into the lowest major
+  shell.
+
+  Nonetheless, one would expect that the nearby orbitals $1\mathrm p_{1/2}$
+  and $1\mathrm d_{5/2}$ would not be too far off, so they are likely to be
+  occupied by the valence nucleon in next few excited states, contributing to
+  $1/2^-$ and $5/2^+$ respectively.  This is indeed the case for the next two
+  excited states, according to the nuclear
+  database:\footnote{\url{https://www.nndc.bnl.gov/chart}}
+  \begin{itemize}
+  \item $E(1/2^-) = 320\,\mathrm{keV}$
+  \item $E(5/2^+) = 1783\,\mathrm{keV}$
+  \end{itemize}
+
+\item The radial scattering equation for the partial wave with angular
+  momentum $l$ is given by:
+  \begin{align*}
+    u''_l(R) = \left(\frac{l (l + 1)}{R^2} +
+    \frac{2 \mu}{\hbar^2} \bigl(V(R) - E\bigr)\right) u_l(R)
+  \end{align*}
+  To avoid clutter, we fix $l$ and thus drop the subscript from $u$.  We also
+  perform the following substitutions:
+  \begin{align*}
+    &R \leftarrow R / a_{\text{ws}}
+      \text{ (similarly for other length quantities)} \\
+    &E \leftarrow E / |V_0|
+      \text{ (similarly for other energy quantities)} \\
+    &\mu \leftarrow \mu a_{\text{ws}}^2 |V_0| / \hbar^2
+  \end{align*}
+  to obtain the dimensionless equation:
+  \begin{align*}
+    u''(R) = \left(\frac{l (l + 1)}{R^2} +
+    2 \mu \left(V(R) - E\right)\right)
+    u(R)
+  \end{align*}
+  with the following normalized potential:
+  \begin{align*}
+    V(R) = \frac{\operatorname{sgn} V_0}{
+    1 + \exp(R - R_{\text{ws}})}
+  \end{align*}
+  The notational changes shall remain in effect until the end of this answer
+  (\#2).
+
+  Due to the singularity in the second derivative at $R = 0$, we shall first
+  construct an approximate power series for small $R$ before dumping the rest
+  of it into the ODE solver.
+
+  We apply the Frobenius method here.  Assume power series of the form:
+  \begin{align*}
+    &u_l(R) = \sum_{n = 0}^\infty a_n R^{n + \lambda} \\
+    &2 \mu (V(R) - E) = \sum_{n = 0}^\infty b_n R^n
+  \end{align*}
+  with $a_0 \ne 0$ to avoid unnecessary ambiguity\footnote{If the first
+    coefficient $a_0$ is zero, we can just redefine the series so that the
+    first coefficient becomes nonzero.}  and $\lambda \ge 0$ to avoid a
+  singularity in $u$ at $R = 0$.  Substituting this into the differential
+  equation and grinding through the algebra, one obtains $\lambda = l + 1$ as
+  well as the following recursion relation:
+  \begin{align*}
+    a_n n (2 l + n + 1) = \sum_{i = 0}^{n - 2} b_i a_{n - 2 - i}
+  \end{align*}
+  Since $a_0$ is arbitrary, we simply set it to one.\footnote{This, in effect,
+    determines the coefficient of the wavefunction.}  Using this series
+  (truncated to some order) we evaluate $u$ and $u'$ near the origin at
+  $R = R_{\text c}$.  The results, $u_{\text c}$ and $u'_{\text c}$, are then
+  used to set up the initial conditions for the integration that follows.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw1-u.pdf}
+    \caption{The radial behavior of the scattering wavefunctions for
+      $l \in \{0, 1, 2\}$ and $E \in \{0.1, 3.0\} \,\mathrm{MeV}$.}
+    \label{fig:wavefunction}
+  \end{figure}
+
+  In this second part where $R > R_{\text c}$, we use the Runge-Kutta-Fehlberg
+  (RKF45) ordinary differential equation (ODE) solver.  This method, like most
+  ODE solvers, assume the standard first-order form:
+  \begin{align*}
+    &\bm y'(x) = \bm f(x, \bm y(x)) &
+    &\text{with initial condition} &
+    &\bm y(x_0) = \bm y_0
+  \end{align*}
+  where $\bm y$ is an $n$-dimensional solution vector and $\bm f$ is an
+  $n$-dimensional vector function that computes its derivative.  Many problems
+  involving differential equations can be rewritten into this form.
+
+  The Runge-Kutta (RK) family of methods use an $m$-stage iteration to compute
+  the the next step
+  \begin{align*}
+    \bm y \twoheadleftarrow \bm y + \bm k \bm b \Delta x
+  \end{align*}
+  where $\bm k$ is an $n \times m$ matrix whose columns are
+  \begin{align*}
+    \bm k_i = \bm f(x + c_i \Delta x, \bm y + \bm k \bm a_i \Delta x)
+  \end{align*}
+  What differs between the RK methods are:
+  \begin{itemize}
+  \item the RK matrix $\bm a$, which is $m \times m$ and strictly lower
+    triangular,
+  \item the weights $\bm b$: an $m$-dimensional vector, and
+  \item the nodes $\bm c$: another $m$-dimensional vector,
+  \end{itemize}
+  all of which must be carefully chosen to produce accurate results.
+
+  RKF45 is an adaptive solver: it uses both 4-th and 5-th order RK methods to
+  estimate the error and adjust the step size during the integration process.
+
+  Now, to use this solver, we rewrite the equation in the standard first-order
+  form:
+  \begin{align*}
+    \begin{cases}
+      u'(R) = \dot u(R) &
+      u(R_{\text c}) = u_{l,{\text c}} \\
+      \dot u'(R) = \left(l (l + 1) / R^2 +
+        2 \mu \left(V(R) - E\right)\right)
+      u(R) &
+      \dot u(R_{\text c}) = \dot u_{l,{\text c}} \\
+    \end{cases}
+  \end{align*}
+  We integrate until a $R = R_{\text e}$ at which the function becomes
+  indiscernible from the asymptotic solution.  At this point, we compute
+  \begin{align*}
+    \rho = \frac{u(R_{\text e})}{u'(R_{\text e})}
+  \end{align*}
+  This ratio is then used to calculate $S_l$:
+  \begin{align*}
+    S = \frac{H^-(R_{\text e}) - \rho H^-{}'(R_{\text e})}{
+    H^+(R_{\text e}) - \rho H^+{}'(R_{\text e})}
+  \end{align*}
+  from which the phase shift can be derived:
+  \begin{align*}
+    \delta = \frac{1}{2 \I} \ln S
+  \end{align*}
+
+\item The scattering wavefunction for $l \in \{0, 1, 2\}$ and
+  $E \in \{0.1, 3.0\} \,\mathrm{MeV}$ are plotted in Figure
+  \ref{fig:wavefunction}.
+
+\item Figure \ref{fig:phase-shift} shows how the phase shift $\delta_l$ varies
+  as a function of energy for $l \in \{0, 1, 2\}$.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{hw1-delta.pdf}
+    \caption{The energy dependence of the phase shifts for
+      $l \in \{0, 1, 2\}$.}
+    \label{fig:phase-shift}
+  \end{figure}
+
+  It can be seen that for $l = 0$ the phase shift is quite negative,
+  indicating that there is significant attraction between the core and the
+  valence neutron.
+
+  In constrast, the $l = 1$ partial wave has a phase shift of nearly zero,
+  indicating that it is neither attractive nor repulsive.
+
+  The $l = 2$ partial wave is predominantly positive, indicating that it is
+  mostly repulsive.  However, the sudden increase near $1.3\,\mathrm{MeV}$
+  indicates that there is at least a resonance state.
+
+\item There appears to be a significant resonance only for $l = 2$, as
+  indicated by the large rise in phase shift.  To confirm this, the model is
+  fitted to the curve as shown in \ref{fig:phase-shift} using unweighted
+  Levenberg--Marquardt.  The model is defined as:
+  \begin{align*}
+    \delta_{\text{res}}(E) =
+    \operatorname{atan2}\left(\frac{\Gamma}{2}, E_{\text r} - E\right) +
+    A E + B
+  \end{align*}
+  The latter two terms constitute the background, assumed to be linear.
+
+  The resonance is located at $E_{\text r} = 1.3463(1)\,\mathrm{MeV}$ and has
+  a width of $\Gamma = 0.2250(2)\,\mathrm{MeV}$. The two background parameters
+  are: $A = -0.0737(2)\,\mathrm{rad}\,\mathrm{MeV}^{-1}$ and
+  $B = -0.0845(4)\,\mathrm{rad}$.  The uncertainties shown here are from the
+  fits.
+
+  The fit is quite good: there is no visually discernible difference between
+  the actual and the model curves near the resonant region ($R^2 = 0.999996$.)
+
+\end{enumerate}
+
+\end{document}
