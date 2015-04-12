@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals
 from numpy import sqrt
 from pandas import concat
 from common import *

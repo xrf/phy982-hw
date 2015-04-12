@@ -164,6 +164,47 @@ def record_to_dict(x):
 def sh_escape(s):
     return "'" + s.replace("'", "'\\''") + "'"
 
+def do_nothing(*args, **kwargs):
+    ''': (...) -> None
+
+    Do absolutely nothing at all.  All arguments are ignored.'''
+    pass
+
+def check_output(cmd, input=None, prehook=do_nothing,
+                 posthook=do_nothing, **kwargs):
+    '''
+    : ([Str],
+       input=Bytes,
+       prehook=(Popen -> a),
+       posthook=((Popen, a) -> None),
+       ...) -> Bytes
+
+    Call a process and capture its output.  An exception is raised if the
+    process exits with a nonzero value.
+
+    This behaves similar to `subprocess.check_output` except that it also
+    supports feeding input data as a string directly, which is not supported
+    on older versions of Python.'''
+    import subprocess
+    if input is None:
+        return subprocess.check_output(cmd, **kwargs)
+    proc = subprocess.Popen(
+        cmd,
+        stdin  = subprocess.PIPE,
+        stdout = subprocess.PIPE,
+        **kwargs
+    )
+    prehook_result = prehook(proc)
+    output, _ = proc.communicate(input)
+    posthook(proc, prehook_result)
+    if proc.returncode != 0:
+        raise subprocess.CalledProcessError(
+            returncode=proc.returncode,
+            cmd=cmd,
+            output=output,
+        )
+    return output
+
 def check_call_with_input(args, input, **kwargs):
     from subprocess import CalledProcessError, PIPE, Popen
     p = Popen(args, stdin=PIPE, **kwargs)
@@ -172,7 +213,7 @@ def check_call_with_input(args, input, **kwargs):
         raise CalledProcessError(p.returncode, args, None)
 
 def ssh(remote, args, input=None):
-    from subprocess import check_output, STDOUT
+    from subprocess import STDOUT
     full_args = ["ssh", "-o", "BatchMode=yes", remote]
     full_args.extend(args)
     return check_output(full_args, input=input, stderr=STDOUT)

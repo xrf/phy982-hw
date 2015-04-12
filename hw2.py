@@ -556,8 +556,21 @@ parameter_indices = {
 # ============================================================================
 
 if __name__ == "__main__":
-    name_template  = "hw2-{target}-{projectile}-elastic-{name}"
-    group_template = "hw2-{group}"
-    do_fresco_quad_cases(name_template, group_template)
-    do_fresco_cases(name_template)
-    do_fit_cases(name_template)
+    from sys import exit, stderr
+    from subprocess import CalledProcessError
+    try:
+        name_template  = "hw2-{target}-{projectile}-elastic-{name}"
+        group_template = "hw2-{group}"
+        do_fresco_quad_cases(name_template, group_template)
+        do_fresco_cases(name_template)
+        do_fit_cases(name_template)
+    except CalledProcessError as e:
+        import traceback
+        traceback.print_exc()
+        stderr.write("Note: its output was:\n")
+        try:
+            stderr = stderr.buffer
+        except AttributeError:
+            pass
+        stderr.write(e.output)
+        exit(1)
