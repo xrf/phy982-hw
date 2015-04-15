@@ -44,7 +44,7 @@ hw1.pdf: hw1.tex common.tex hw1-delta.pdf hw1-u.pdf
 
 dist/hw2.ok: hw2.py common.py
 	mkdir -p dist
-	./hw2.py do_runs
+	./hw2.py
 	touch $@
 
 hw2-1.dat \
