@@ -4,7 +4,9 @@ from os.path import join
 import os as _os
 DEV_NULL = open(_os.devnull, "r+")
 
-_ensure_str_encoding = []
+import locale as _locale
+PREFERRED_ENCODING = _locale.getpreferredencoding()
+
 def ensure_str(string):
     '''Ensure that the argument is in fact a Unicode string.  If it isn't,
     then:
@@ -16,10 +18,7 @@ def ensure_str(string):
     if getattr(str, "decode", None) and getattr(str, "encode", None):
         if isinstance(string, unicode):
             return string
-        if not _ensure_str_encoding:
-            import locale
-            _ensure_str_encoding.append(locale.getpreferredencoding(False))
-        return string.decode(_ensure_str_encoding[0])
+        return string.decode(PREFERRED_ENCODING)
     # Python 3
     if isinstance(string, str):
         return string
@@ -206,44 +205,45 @@ def check_output(cmd, input=None, prehook=do_nothing,
     return output
 
 def check_call_with_input(args, input, **kwargs):
-    from subprocess import CalledProcessError, PIPE, Popen
-    p = Popen(args, stdin=PIPE, **kwargs)
+    import subprocess
+    p = subprocess.Popen(args, stdin=subprocess.PIPE, **kwargs)
     p.communicate(input)
     if p.returncode != 0:
-        raise CalledProcessError(p.returncode, args, None)
+        raise subprocess.CalledProcessError(p.returncode, args, None)
 
 def ssh(remote, args, input=None):
-    from subprocess import STDOUT
+    import subprocess
     full_args = ["ssh", "-o", "BatchMode=yes", remote]
     full_args.extend(args)
-    return check_output(full_args, input=input, stderr=STDOUT)
+    return check_output(full_args, input=input, stderr=subprocess.STDOUT)
 
 def scp(paths):
-    from subprocess import check_call
-    full_args = ["rsync", "-P", "-e", "ssh -o BatchMode=yes", "-r"]
+    import subprocess
+    full_args = ["rsync", "-e", "ssh -o BatchMode=yes", "-r"]
     full_args.extend(paths)
-    check_call(full_args)
+    subprocess.check_call(full_args)
 
 # ----------------------------------------------------------------------------
 
 # fine structure constant
-ALPHA = 7.29735257e-3
+ALPHA = 1/137.03599
 
 # hbar * c /(MeV fm)
-HBAR_C = 197.326972
+HBAR_C = 197.32705
+
+# some correction factor because fresco is weird
+CORR = 1.033608
 
 CHARGE = {
     "n": 0,
     "p": 1,
 }
 
-REMOTE = "fishtank"
-
 def rutherford_dcs(angle, E, z=1, Z=1):
     '''(deg, MeV, 1, 1) -> mb/sr'''
     from numpy import sin, pi
     return 10. / 16. * (ALPHA * z * Z * HBAR_C /
-                        (E * sin(angle / 360. * pi) ** 2)) ** 2
+                        (E * sin(angle / 360. * pi) ** 2)) ** 2 * CORR
 
 def maybe_rutherford_dcs(angle, E, z=1, Z=1):
     '''(deg, MeV, 1, 1) -> mb/sr | 1

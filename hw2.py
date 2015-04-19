@@ -2,73 +2,79 @@
 from common import *
 from hw2_data import *
 
+PARAMETER_INDICES = {
+    "ap":  (1, 1),
+    "at":  (1, 2),
+    "rc":  (1, 3),
+    "Vvr": (2, 1),
+    "rvr": (2, 2),
+    "avr": (2, 3),
+    "Wvi": (2, 4),
+    "rvi": (2, 5),
+    "avi": (2, 6),
+    "Vsr": (3, 1),
+    "rsr": (3, 2),
+    "asr": (3, 3),
+    "Wsi": (3, 4),
+    "rsi": (3, 5),
+    "asi": (3, 6),
+    "Vor": (4, 1),
+    "ror": (4, 2),
+    "aor": (4, 3),
+    "Woi": (4, 4),
+    "roi": (4, 5),
+    "aoi": (4, 6),
+}
+
 def plot_rdcs(name, data, charge_product):
     import subprocess
     from pandas import DataFrame
     data = DataFrame(data)
     data["rdcs_min"] = data["rdcs"] - data["rdcs_err"]
     data["rdcs_max"] = data["rdcs"] + data["rdcs_err"]
-    try:
-        check_call_with_input(("Rscript", "-"), plot_template.format(
-            data=data.to_csv(sep=" ", na_rep="nan", index=False),
-            units="(mb/sr)" if charge_product == 0 else "Rutherford",
-            outname=name,
-        ).encode("utf-8"))
-    except subprocess.CalledProcessError:
-        import sys
-        sys.exit(1)
+    check_call_with_input(("Rscript", "-"), plot_template.format(
+        data=data.to_csv(sep=" ", na_rep="nan", index=False),
+        units="(mb/sr)" if charge_product == 0 else "Rutherford",
+        outname=name,
+    ).encode(PREFERRED_ENCODING))
 
-def run_fresco(name, fresco_input, remote=REMOTE):
-    from shutil import rmtree
+def run_fresco(name, fresco_input):
+    import shutil
     work_dir = "dist/" + name
-    remote_dir = "tmp/fresco/" + name
-
     # get a clean working directory
-    rmtree(work_dir, ignore_errors=True)
+    shutil.rmtree(work_dir, ignore_errors=True)
     mkdirs(work_dir)
+    with WorkDir(work_dir):
+        # save a copy of the input for debugging purposes
+        write_file("fresco.in",  fresco_input)
+        output = check_output(
+            ("fresco",),
+            input=fresco_input.encode(PREFERRED_ENCODING),
+        )
+        write_file("fresco.out", output, binary=True)
 
-    # prepare the inputs
-    write_file(work_dir + "/fresco.in",  fresco_input)
-
-    # calculate
-    output = ssh(remote, ("mkdir -p " + sh_escape(remote_dir) +
-                          " && cd " + sh_escape(remote_dir) +
-                          " && /user/nunes/bin/x86_64/fresco",),
-                 input=fresco_input.encode("utf-8"))
-    scp((remote + ":" + remote_dir + "/*", work_dir))
-    ssh(remote, ("rm -r " + sh_escape(remote_dir),))
-    write_file(work_dir + "/fresco.out", output.decode("utf-8"))
-
-def run_sfresco(name, fresco_input, search_input, remote=REMOTE):
-    from shutil import rmtree
+def run_sfresco(name, fresco_input, search_input):
+    import shutil
     work_dir = "dist/" + name
-    remote_dir = "tmp/sfresco/" + name
     sfresco_input = sfresco_template
-
     # get a clean working directory
-    rmtree(work_dir, ignore_errors=True)
+    shutil.rmtree(work_dir, ignore_errors=True)
     mkdirs(work_dir)
-
-    # prepare the inputs
-    write_file(work_dir + "/search.in",  search_input)
-    write_file(work_dir + "/fresco.in",  fresco_input)
-    write_file(work_dir + "/sfresco.in", sfresco_input)
-
-    # calculate
-    ssh(remote, ("mkdir -p " + sh_escape(remote_dir),))
-    scp((work_dir + "/search.in", work_dir + "/fresco.in",
-         remote + ":" + remote_dir))
-    output = ssh(remote, ("cd " + sh_escape(remote_dir) +
-                          " && /user/nunes/bin/x86_64/sfresco",),
-                 input=sfresco_input.encode("utf-8"))
-    scp((remote + ":" + remote_dir + "/*", work_dir))
-    ssh(remote, ("rm -r " + sh_escape(remote_dir),))
-    write_file(work_dir + "/sfresco.out", output.decode("utf-8"))
+    with WorkDir(work_dir):
+        # save a copy of the inputs for debugging purposes
+        write_file("search.in",  search_input)
+        write_file("fresco.in",  fresco_input)
+        write_file("sfresco.in", sfresco_input)
+        output = check_output(
+            ("sfresco",),
+            input=sfresco_input.encode(PREFERRED_ENCODING),
+        )
+        write_file("sfresco.out", output, binary=True)
 
 def make_potential_terms(A_p, A_t, r_c, Vras,
                          radius_factor=1, enable_imag=True,
                          overrides={}):
-    terms = {0: {"ap": A_p, "at": A_t, "rc": r_c * radius_factor}}
+    terms = {0: {"p1": A_p, "p2": A_t, "p3": r_c * radius_factor}}
 
     # place the parameters in the correct positions
     term_type = 1
@@ -88,7 +94,7 @@ def make_potential_terms(A_p, A_t, r_c, Vras,
             term_type += 1
 
     for name, value in overrides.items():
-        i, j = parameter_indices[name]
+        i, j = PARAMETER_INDICES[name]
         terms[i - 1][j - 1] = value
 
     # process one more time to fix the parameter names
@@ -154,20 +160,18 @@ def parse_fresco_output(fn):
                 line.strip() == "END"):
                 continue
             data.append(tuple(map(float, line.split())))
+    if len(data) == 0:
+        raise Exception("fresco did not produce any output")
     data = DataFrame(data, columns=("angle", "rdcs"))
     return data
 
-def parse_fit_case(projectile, energy, case):
-    '''(Str, Float, {
-        [-]"parameters": [{
+def parse_fit_case(projectile, energy, parameters):
+    '''(Str, Float, [{
             "name":    Str,
             "initial": Float,
             "step":    Float,
             ...
-        }],
-        ...
-    })'''
-    parameters = case.pop("parameters")
+        }]) -> Str'''
     parameters = list(parameters)       # make copy
     for i, parameter in enumerate(parameters):
         parameter = dict(parameter) # make copy
@@ -175,7 +179,8 @@ def parse_fit_case(projectile, energy, case):
         name    = parameter["name"]
         initial = parameter.pop("initial")
         parameter["pline"], parameter["col"] = \
-            parameter_indices[name]
+            PARAMETER_INDICES[name]
+        parameter["name"] = "'" + name + "'"
         parameter["kp"]   = parameter.get("kp", 1)
         parameter["kind"] = parameter.get("kind", 1)
         parameter["potential"] = initial
@@ -192,6 +197,69 @@ def parse_fit_case(projectile, energy, case):
     )
 
 def parse_sfresco_output(fn):
+    '''Iterable Str ->  {"status": Str, "params": DataFrame(Str, Float, Float)}
+
+    Parses sfresco's output.'''
+    import re, pandas as pd
+    with open(fn) as f:
+        output_lines = tuple(f)
+    lines = iter(output_lines)
+    chisq = None
+    result = None
+    while True:
+        line = next(lines, None)
+        if line is None: break
+        if re.match(" *Search +on +0 +variables", line):
+            # nothing to do here
+            return {
+                "status": "CONVERGED",
+                "params": pd.DataFrame(),
+                "chisq": None,
+            }
+        m = re.match(" *ChiSq/N *= *([.eE\d]+) *from", line)
+        if m:
+            chisq = float(m.group(1))
+        m = re.match(" *FCN= *[.eE\d]+ *FROM MIGRAD *STATUS=(..........)" +
+                     " *\d+ *CALLS *\d+ *TOTAL *$", line)
+        if not m: continue
+        status = m.group(1)
+
+        line = next(lines, None)
+        if line is None: break
+
+        line = next(lines, None)
+        if line is None: break
+
+        line = next(lines, None)
+        if line is None: break
+        m = re.match(" *EXT +PARAMETER +(APPROXIMATE|CURRENT +GUESS)?" +
+                     " +STEP +FIRST *$", line)
+        if not m: continue
+
+        line = next(lines, None)
+        if line is None: break
+        m = re.match(" *NO. +NAME +VALUE +ERROR +SIZE +DERIVATIVE *$", line)
+        if not m: continue
+
+        params = []
+        for line in lines:
+            fields = line.split()
+            if len(fields) != 6:
+                break
+            _, name, value, error, _, _ = fields
+            params.append((name, float(value), float(error)))
+        result = {
+            "status": status.strip(),
+            "params": pd.DataFrame(params, columns=("name", "value", "error")),
+        }
+
+    if not (result and chisq):
+        raise ValueError("failed to parse sfresco output: " + fn)
+    result["chisq"] = chisq
+    return result
+
+def parse_sfresco_search_output(fn):
+    '''Parses sfresco's `<inputname>.plot`.'''
     import pandas as pd
     stage = 0
     expt_data = []
@@ -219,33 +287,34 @@ def parse_sfresco_output(fn):
     theory_data["origin"] = "theory"
     return pd.concat((expt_data, theory_data))
 
-def do_fit_cases(name_template):
-    for case in fit_cases:
-        case = dict(case)               # make a copy
-        name       = case.pop("name")
-        projectile = case.pop("projectile")
-        energy     = case.pop("energy")
-        charge_product = target_charge * CHARGE[projectile]
-        search_input = parse_fit_case(projectile, energy, case)
-        fresco_input = make_fresco_input(energy, projectile, **case)
-        name = name_template.format(target=target, name=name,
-                                    projectile=projectile)
-        run_sfresco(name, fresco_input, search_input)
-        work_dir = "dist/" + name
-        data = parse_sfresco_output(work_dir + "/search.plot")
-        data["energy"]            = energy
-        data["target_charge"]     = target_charge
-        data["projectile_charge"] = CHARGE[projectile]
-        maybe_divide_rutherford(data)
-        plot_rdcs(name, data, charge_product)
-
-def do_fresco_cases(name_template):
+def do_fresco_case(name_template, case):
     from pandas import concat
-    for case in fresco_cases:
-        case = dict(case)               # make a copy
-        name       = case.pop("name")
-        projectile = case.pop("projectile")
+    case = dict(case)               # make a copy
+    name       = case.pop("name")
+    projectile = case.pop("projectile")
+    energy     = case.pop("energy")
+    charge_product = target_charge * CHARGE[projectile]
+    fresco_input = make_fresco_input(energy, projectile, **case)
+    name = name_template.format(target=target, name=name,
+                                projectile=projectile)
+    run_fresco(name, fresco_input)
+    work_dir = "dist/" + name
+    data = parse_fresco_output(work_dir + "/fort.16")
+    data["origin"]        = "theory"
+    data["energy"]        = energy
+    data["target_charge"] = target_charge
+    expt = expt_data[(expt_data.projectile == projectile) &
+                     (expt_data.energy     == energy)]
+    plot_rdcs(name, concat((data, expt)), charge_product)
+
+def do_fresco_quad_case(name_template, group_template, group, quad):
+    from pandas import concat
+    datasets = []
+    for case in quad:
+        case = dict(case)
+        name       = case.pop("name") + "-" + group
         energy     = case.pop("energy")
+        projectile = case.pop("projectile")
         charge_product = target_charge * CHARGE[projectile]
         fresco_input = make_fresco_input(energy, projectile, **case)
         name = name_template.format(target=target, name=name,
@@ -253,42 +322,60 @@ def do_fresco_cases(name_template):
         run_fresco(name, fresco_input)
         work_dir = "dist/" + name
         data = parse_fresco_output(work_dir + "/fort.16")
-        data["origin"]        = "theory"
-        data["energy"]        = energy
-        data["target_charge"] = target_charge
-        expt = expt_data[(expt_data.projectile == projectile) &
-                         (expt_data.energy     == energy)]
-        plot_rdcs(name, concat((data, expt)), charge_product)
+        datasets.append(data)
+        data["origin"]     = "theory"
+        data["projectile"] = projectile
+        data["energy"]     = energy
+        datasets.extend((
+            data,
+            expt_data[(expt_data.projectile == projectile) &
+                      (expt_data.energy     == energy)],
+        ))
+    data = concat(datasets)
+    write_table(group_template.format(group=group) + ".dat",
+                data[["origin", "projectile", "energy",
+                      "angle", "angle_err", "rdcs", "rdcs_err"]])
 
-def do_fresco_quad_cases(name_template, group_template):
-    from pandas import concat
-    for group, quad in fresco_quad_cases.items():
-        datasets = []
-        for case in quad:
-            case = dict(case)
-            name       = case.pop("name") + "-" + group
-            energy     = case.pop("energy")
-            projectile = case.pop("projectile")
-            charge_product = target_charge * CHARGE[projectile]
-            fresco_input = make_fresco_input(energy, projectile, **case)
-            name = name_template.format(target=target, name=name,
-                                        projectile=projectile)
-            run_fresco(name, fresco_input)
-            work_dir = "dist/" + name
-            data = parse_fresco_output(work_dir + "/fort.16")
-            datasets.append(data)
-            data["origin"]     = "theory"
-            data["projectile"] = projectile
-            data["energy"]     = energy
-            datasets.extend((
-                data,
-                expt_data[(expt_data.projectile == projectile) &
-                          (expt_data.energy     == energy)],
-            ))
-        data = concat(datasets)
-        write_table(group_template.format(group=group) + ".dat",
-                    data[["origin", "projectile", "energy",
-                          "angle", "angle_err", "rdcs", "rdcs_err"]])
+def print_fit_result(result):
+    if result["status"].upper() == "CONVERGED":
+        if result["chisq"] is not None:
+            print("fit converged (chisq = {chisq}):".format(**result))
+    else:
+        print("WARNING: fit did not converge ({status}, chisq = {chisq}):"
+              .format(**result))
+    for param_name, value, error in result["params"].values:
+        print("{0:10} = {1:11.5} +/- {2:8.2}".format(param_name, value, error))
+    sys.stdout.flush()
+
+def do_fit_case(name_template, case, plot=True):
+    import sys
+    case = dict(case)               # make a copy
+    name       = case.pop("name")
+    projectile = case.pop("projectile")
+    energy     = case.pop("energy")
+    overrides  = dict(case.pop("overrides", {}))
+    parameters = []
+    for parameter in case.pop("parameters"):
+        if "step" not in parameter:
+            overrides[parameter["name"]] = parameter["initial"]
+        else:
+            parameters.append(parameter)
+    charge_product = target_charge * CHARGE[projectile]
+    search_input = parse_fit_case(projectile, energy, parameters)
+    fresco_input = make_fresco_input(energy, projectile,
+                                     overrides=overrides, **case)
+    name = name_template.format(target=target, name=name,
+                                projectile=projectile)
+    run_sfresco(name, fresco_input, search_input)
+    work_dir = "dist/" + name
+    data = parse_sfresco_search_output(work_dir + "/search.plot")
+    data["energy"]            = energy
+    data["target_charge"]     = target_charge
+    data["projectile_charge"] = CHARGE[projectile]
+    maybe_divide_rutherford(data)
+    if plot:
+        plot_rdcs(name, data, charge_product)
+    return parse_sfresco_output(work_dir + "/sfresco.out")
 
 fresco_template = """
 Fresco;
@@ -340,12 +427,12 @@ data <- read.table(textConnection("{data}"), header=TRUE)
  + scale_y_log10()
  + annotation_logticks(sides="l")
  + xlab("angle /deg")
- + ylab(paste0("differential cross section /{units}]"))
+ + ylab(paste0("differential cross section /{units}"))
  + mytheme
  + save("{outname}.svg"))
 """
 
-fresco_quad_cases = dict(({1.0: "1", 1.5: "1-large-radius"}[radius_factor], (
+fresco_quad_cases = dict(({1.0: "1", 1.5: "1-large-radius"}[radius_factor], [
     {
         "name": "low",
         "projectile": "p",
@@ -370,9 +457,9 @@ fresco_quad_cases = dict(({1.0: "1", 1.5: "1-large-radius"}[radius_factor], (
         "energy": 24.0,
         "radius_factor": radius_factor,
     },
-)) for radius_factor in (1.0, 1.5))
+]) for radius_factor in [1.0, 1.5])
 
-fresco_cases = (
+fresco_cases = [
     # {
     #     "name": "low-vol-re-sens-V",
     #     "projectile": "p",
@@ -381,15 +468,15 @@ fresco_cases = (
     #         "Vvr": 53.5 * 1.1,
     #     },
     # },
-)
+]
 
-fit_cases = (
+fit_cases = [
     {
         "name": "low-vol-re",
         "projectile": "p",
         "energy": 8.2,
         "overrides": {"Vor": 0, "ror": 0, "aor": 0},
-        "parameters": (
+        "parameters": [
             {
                 "name": "Vvr",
                 "initial": 53.5,
@@ -405,7 +492,7 @@ fit_cases = (
                 "initial": 0.65,
                 "step": 0.01,
             },
-        ),
+        ],
     },
     {
         "name": "low-nofit",
@@ -418,7 +505,7 @@ fit_cases = (
         "projectile": "p",
         "energy": 8.2,
         "overrides": {"Vor": 0, "ror": 0, "aor": 0},
-        "parameters": (
+        "parameters": [
             {
                 "name": "Wsi",
                 "initial": 13.5,
@@ -434,14 +521,14 @@ fit_cases = (
                 "initial": 0.47 * 1.1,
                 "step": 0.01,
             },
-        ),
+        ],
     },
     {
         "name": "low-both",
         "projectile": "p",
         "energy": 8.2,
         "overrides": {"Vor": 0, "ror": 0, "aor": 0},
-        "parameters": (
+        "parameters": [
             {
                 "name": "Vvr",
                 "initial": 84.6,
@@ -472,13 +559,13 @@ fit_cases = (
                 "initial": 0.55,
                 "step": 0.01,
             },
-        ),
+        ],
     },
     {
         "name": "low-spinorb",
         "projectile": "p",
         "energy": 8.2,
-        "parameters": (
+        "parameters": [
             {
                 "name": "Vvr",
                 "initial": 89,
@@ -525,52 +612,207 @@ fit_cases = (
                 "step": 0.01,
                 "valmin": 0.2,
             },
-        ),
+        ],
     },
-)
+    {
+        "name": "low-spinorb",
+        "projectile": "n",
+        "energy": 5.0,
+        "parameters": [
+            {
+                "name": "Vvr",
+                "initial": 54.7,
+                "step": 0.1,
+            },
+            {
+                "name": "rvr",
+                "initial": 1.04,
+                "step": 0.001,
+            },
+            {
+                "name": "avr",
+                "initial": 0.65,
+            },
+            {
+                "name": "Wsi",
+                "initial": 2.75,
+                "step": 0.1,
+            },
+            {
+                "name": "rsi",
+                "initial": 0.995,
+                "step": 0.001,
+            },
+            {
+                "name": "asi",
+                "initial": 0.715,
+                "step": 0.001,
+            },
+            {
+                "name": "Vor",
+                "initial": 91.1,
+                "step": 0.1,
+            },
+            {
+                "name": "ror",
+                "initial": 0.87,
+                "step": 0.001,
+            },
+            {
+                "name": "aor",
+                "initial": 0.60,
+                "step": 0.001,
+            },
+        ],
+    },
+    {
+        "name": "high-spinorb",
+        "projectile": "n",
+        "energy": 24.0,
+        "parameters": [
+            {
+                "name": "Vvr",
+                "initial": 43.097,
+                "step": 0.1,
+            },
+            {
+                "name": "rvr",
+                "initial": 0.98912,
+                "step": 0.001,
+            },
+            {
+                "name": "avr",
+                "initial": 0.67255,
+                "step": 0.001,
+            },
+            {
+                "name": "Wsi",
+                "initial": 2.9838,
+                "step": 0.1,
+            },
+            {
+                "name": "rsi",
+                "initial": 0.97348,
+                "step": 0.001,
+            },
+            {
+                "name": "asi",
+                "initial": 0.65,
+            },
+            {
+                "name": "Vor",
+                "initial": 3.0903,
+                "step": 0.1,
+            },
+            {
+                "name": "ror",
+                "initial": 0.94325,
+                "step": 0.001,
+            },
+            {
+                "name": "aor",
+                "initial": 0.65,
+            },
+        ],
+    },
+]
 
-parameter_indices = {
-    "ap":  (1, 1),
-    "at":  (1, 2),
-    "rc":  (1, 3),
-    "Vvr": (2, 1),
-    "rvr": (2, 2),
-    "avr": (2, 3),
-    "Wvi": (2, 4),
-    "rvi": (2, 5),
-    "avi": (2, 6),
-    "Vsr": (3, 1),
-    "rsr": (3, 2),
-    "asr": (3, 3),
-    "Wsi": (3, 4),
-    "rsi": (3, 5),
-    "asi": (3, 6),
-    "Vor": (4, 1),
-    "ror": (4, 2),
-    "aor": (4, 3),
-    "Woi": (4, 4),
-    "roi": (4, 5),
-    "aoi": (4, 6),
+___ = None # for aesthetic reasons
+def frange(first, second, ___, last):
+    import numpy as np
+    return np.linspace(first, last, round((last - first) / (second - first)))
+
+r_range = frange(1.2, 1.3, ___, 1.3)
+a_range = frange(0.45, 0.55, ___, 0.75)
+fit_case_template = {
+    "name": "high-theworks",
+    "projectile": "p",
+    "energy": 55,
+    "parameters": {
+        "Vvr": frange(0, 10, ___, 100),
+        "rvr": r_range,
+        "avr": a_range,
+        "Wvi": frange(0, 10, ___, 20),
+        "rvi": r_range,
+        "avi": a_range,
+        "Wsi": frange(0, 10, ___, 20),
+        "rsi": r_range,
+        "asi": a_range,
+        "Vor": frange(0, 5, ___, 15),
+        "ror": r_range,
+        "aor": a_range,
+    },
 }
+
+def try_fits(fit_case_template, step=0.01):
+    import itertools
+    import pandas as pd
+    name_template = "hw2-try-{target}-{projectile}-elastic-{name}"
+    case = dict(fit_case_template) # make a copy
+    param_names, param_ranges = zip(*list(
+        case.pop("parameters").items()))
+    count = 0
+    param_sets = []
+    for p in itertools.product(*param_ranges):
+        count += 1
+        if count > 10000:
+            raise Exception("too many parameter sets: " + str(count))
+        param_sets.append(p)
+    print("note: number of parameter sets = " + str(count) + "\n")
+    best_chisq  = float("inf")
+    best_params = None
+    best_result = None
+    for param_set in param_sets:
+        initial_params = dict(zip(param_names, param_set))
+        print(pd.DataFrame(initial_params, index=[0]))
+        case["parameters"] = [{"name": name, "initial": initial, "step": step}
+                              for name, initial in initial_params.items()]
+        result = do_fit_case(name_template, case, plot=False)
+        print_fit_result(result)
+        if (result["status"].upper() == "CONVERGED" and
+            result["chisq"] < best_chisq):
+            best_chisq  = result["chisq"]
+            best_params = initial_params
+            best_result = result
+        print("")
+    if best_result is None:
+        print("none of the fits were successful :(")
+        return
+    print("---- best result ----")
+    print_fit_result(best_result)
+    print("initial params were:")
+    print(pd.DataFrame(best_params, index=[0]))
+
+def main(argv):
+    name_template  = "hw2-{target}-{projectile}-elastic-{name}"
+    group_template = "hw2-{group}"
+    if argv[1:] == []:
+        for group, quad in fresco_quad_cases.items():
+            do_fresco_quad_case(name_template, group_template, group, quad)
+        for case in fresco_cases:
+            do_fresco_case(name_template, case)
+        for case in fit_cases:
+            print_fit_result(do_fit_case(name_template, case))
+    elif argv[1:] == ["fitlast"]:
+        print_fit_result(do_fit_case(name_template, fit_cases[-1]))
+    elif argv[1:] == ["tryfit"]:
+        try_fits(fit_case_template)
+    else:
+        raise Exception("unexpected arguments: " + repr(argv[1:]))
 
 # ============================================================================
 
 if __name__ == "__main__":
-    from sys import exit, stderr
-    from subprocess import CalledProcessError
+    import subprocess, sys
     try:
-        name_template  = "hw2-{target}-{projectile}-elastic-{name}"
-        group_template = "hw2-{group}"
-        do_fresco_quad_cases(name_template, group_template)
-        do_fresco_cases(name_template)
-        do_fit_cases(name_template)
-    except CalledProcessError as e:
+        main(sys.argv)
+    except subprocess.CalledProcessError as e:
         import traceback
         traceback.print_exc()
-        stderr.write("Note: its output was:\n")
+        sys.stderr.write("Note: its output was:\n")
         try:
-            stderr = stderr.buffer
+            sys_stderr = sys.stderr.buffer
         except AttributeError:
-            pass
-        stderr.write(e.output)
-        exit(1)
+            sys_stderr = sys.stderr
+        sys_stderr.write(e.output)
+        sys.exit(1)

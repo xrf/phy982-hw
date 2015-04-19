@@ -204,7 +204,7 @@ NAMELIST
 
 \item We start by fitting the $V$, $r$, and $a$ of the real volume potential,
   using the global potential parameters as the initial guess:
-  $53.5\,\mathrm{MeV}$, $1.25\,\mathrm{nm}$ and $0.65\,\mathrm{nm}$
+  $53.5\,\mathrm{MeV}$, $1.25\,\mathrm{fm}$ and $0.65\,\mathrm{fm}$
   respectively.
 
   \begin{figure}
@@ -215,14 +215,14 @@ NAMELIST
   \end{figure}
 
   The $V$, by itself, does not improve the fit by much.  So we start by
-  allowing $a$ to change and the minimum was found to be $0.55\,\mathrm{nm}$.
+  allowing $a$ to change and the minimum was found to be $0.55\,\mathrm{fm}$.
 
   Then we allow $r$ to change.  This causes $a$ to decrease even further to
-  $0.29\,\mathrm{nm}$, which seems rather unphysical.  The $r$ is optimized to
-  be $1.39\,\mathrm{nm}$.
+  $0.29\,\mathrm{fm}$, which seems rather unphysical.  The $r$ is optimized to
+  be $1.39\,\mathrm{fm}$.
 
   Finally we allow all 3 parameters to change, producing the final result of
-  $84.6\,\mathrm{MeV}$, $1.03\,\mathrm{nm}$ and $0.59\,\mathrm{nm}$
+  $84.6\,\mathrm{MeV}$, $1.03\,\mathrm{fm}$ and $0.59\,\mathrm{fm}$
   respectively.  The depth is quite a bit larger and the radius is noticeably
   smaller, while the diffusivity is slighter lower than usual.  The fit is
   shown in Figure \ref{fig:low-vol-re}.
@@ -240,7 +240,7 @@ NAMELIST
   \item changing $r$: the values remain within $0.1$ of the original (in their
     respective units).
   \item changing $a$: fitted $V$ becomes $68.5\,\mathrm{MeV}$, $r$ becomes
-    $0.75\,\mathrm{nm}$, and $a$ beccomes $0.20\,\mathrm{nm}$.
+    $0.75\,\mathrm{fm}$, and $a$ beccomes $0.20\,\mathrm{fm}$.
   \end{itemize}
   From this we see that $a$ is very sensitive to the initial value, while the
   other two are not very sensitive (with $r$ being the least sensitive).
@@ -265,8 +265,8 @@ NAMELIST
 
   In this case, the fit in Figure \ref{fig:low-surf-im} is not as good as the
   one for the real volume potential.  The fitted parameters are:
-  $W = 22.7\,\mathrm{MeV}$, $r = 1.3\,\mathrm{nm}$, and
-  $a = 0.55\,\mathrm{nm}$.  We find that $\chi^2 = 113$, worse than before.
+  $W = 22.7\,\mathrm{MeV}$, $r = 1.3\,\mathrm{fm}$, and
+  $a = 0.55\,\mathrm{fm}$.  We find that $\chi^2 = 113$, worse than before.
 
   We also tested the sensitivity of these parameters with the same technique
   as before, and found that the final parameters did not change very much for
@@ -276,9 +276,9 @@ NAMELIST
 
   If we fit with both volume and surface terms, we obtain the result in Figure
   \ref{fig:low-both}.  The parameters are: $V_{\text v} = 89.2\,\mathrm{MeV}$,
-  $r_{\text v} = 1.0\,\mathrm{nm}$, $a_{\text v} = 0.57\,\mathrm{nm}$,
-  $W_{\text s} = 25.2\,\mathrm{MeV}$, $r_{\text s} = 1.2\,\mathrm{nm}$, and
-  $a_{\text s} = 0.26\,\mathrm{nm}$.  We find that $\chi^2 = 31$, somewhat
+  $r_{\text v} = 1.0\,\mathrm{fm}$, $a_{\text v} = 0.57\,\mathrm{fm}$,
+  $W_{\text s} = 25.2\,\mathrm{MeV}$, $r_{\text s} = 1.2\,\mathrm{fm}$, and
+  $a_{\text s} = 0.26\,\mathrm{fm}$.  We find that $\chi^2 = 31$, somewhat
   better than with only volume.
 
 \item Finally, we repeat this with the real spin-orbit term, as plotted in
@@ -295,22 +295,101 @@ NAMELIST
   The fitted parameters are:
   \begin{align*}
     V_{\text v} = 95.2\,\mathrm{MeV} \\
-    r_{\text v} = 1.04\,\mathrm{nm} \\
-    a_{\text v} = 0.36\,\mathrm{nm} \\
+    r_{\text v} = 1.04\,\mathrm{fm} \\
+    a_{\text v} = 0.36\,\mathrm{fm} \\
     W_{\text s} = 8.8\,\mathrm{MeV} \\
-    r_{\text s} = 0.99\,\mathrm{nm} \\
-    a_{\text s} = 0.43\,\mathrm{nm} \\
+    r_{\text s} = 0.99\,\mathrm{fm} \\
+    a_{\text s} = 0.43\,\mathrm{fm} \\
     V_{\text o} = 11.7\,\mathrm{MeV} \\
-    r_{\text o} = 1.25\,\mathrm{nm} \\
-    a_{\text o} = 0.11\,\mathrm{nm}
+    r_{\text o} = 1.25\,\mathrm{fm} \\
+    a_{\text o} = 0.11\,\mathrm{fm}
   \end{align*}
   We find that $\chi^2 = 24$, a small but noticeable improvement.  In our
   attempts we found that $a_{\text o}$ was adjusted to an unphysical negative
   value, thus we constrained its value to be positive.  Despite this,
-  $0.11\,\mathrm{nm}$ is still frighteningly low, indicating that the fit
+  $0.11\,\mathrm{fm}$ is still frighteningly low, indicating that the fit
   needs further manual adjustments from an expert who actually knows what they
   are doing.
 
 \end{enumerate}
+
+\newpage
+
+\subsection*{Corrections}
+
+\subsection*{General models}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{hw2-1.pdf}
+  \caption{Comparison between theoretical and experimental differential
+    cross sections.  Shown on top of each subplot are the energies and
+    projectile respectively.  The cross sections for proton scattering are
+    relative to the (point-particle) Rutherford cross section.}
+  \label{fig:compare2}
+\end{figure}
+
+In Figure \ref{fig:compare2} we show the comparison between the optical
+potential models and the experimental data.  The optical potentials are
+general: they are fitted over a wide range of nuclei, so there is a
+significant discrepancy between them.
+
+\subsection*{Fitting}
+
+\subsubsection*{Neutron scattering at $5\,\mathrm{MeV}$}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{hw2-Ni60-n-elastic-low-spinorb.pdf}
+  \caption{Fit of neutron scattering with \textsuperscript{60}Ni at
+    $5\,\mathrm{MeV}$.}
+  \label{fig:n-low-spinorb}
+\end{figure}
+
+The fit (Figure \ref{fig:n-low-spinorb}) seems to be rather indifferent to
+the value of $a_{\text v}$ in the volume term, so we left the parameter fixed
+at $0.65\,\mathrm{fm}$.  All the other parameters are minimized according to
+sfresco:
+\begin{align*}
+  V_{\text v} &=    54(1)\,\mathrm{MeV} \\
+  r_{\text v} &=  1.06(2)\,\mathrm{fm} \\
+  W_{\text s} &=     3(2)\,\mathrm{MeV} \\
+  r_{\text s} &=  1.01(7)\,\mathrm{fm} \\
+  a_{\text s} &= 0.62(24)\,\mathrm{fm} \\
+  V_{\text o} &=    92(3)\,\mathrm{MeV} \\
+  r_{\text o} &= 0.869(4)\,\mathrm{fm} \\
+  a_{\text o} &=  0.57(5)\,\mathrm{fm}
+\end{align*}
+We note that the radii seem a bit lower than normal, and the spinorbit term
+seems unusually large.  The surface term has large uncertainities, indicating
+that it is poorly determined by the data.  In this fit, $\chi^2 = 0.37$, which
+is a bit low (probably due to the large error bars).
+
+\subsubsection*{Neutron scattering at $24\,\mathrm{MeV}$}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{hw2-Ni60-n-elastic-high-spinorb.pdf}
+  \caption{Fit of neutron scattering with \textsuperscript{60}Ni at
+    $24\,\mathrm{MeV}$.}
+  \label{fig:n-high-spinorb}
+\end{figure}
+
+We could not determine suitable values for $a_{\text s}$ or $a_{\text o}$ as
+freeing them always caused severe divergence and unphysical parameters,
+therefore we left them at the usual $0.65\,\mathrm{fm}$.  The fit results are
+shown in Figure \ref{fig:n-high-spinorb}.  All the other parameters are
+minimized according to sfresco ($\chi^2 = 6.8$):
+\begin{align*}
+  V_{\text v} &= 43.3(5)\,\mathrm{MeV} \\
+  r_{\text v} &= 0.986(8)\,\mathrm{fm} \\
+  a_{\text v} &= 0.67(1)\,\mathrm{fm} \\
+  W_{\text s} &= 2.9(2)\,\mathrm{MeV} \\
+  r_{\text s} &= 0.98(3)\,\mathrm{fm} \\
+  V_{\text o} &= 3.1(5)\,\mathrm{MeV} \\
+  r_{\text o} &= 0.94(4)\,\mathrm{fm} \\
+\end{align*}
+The tail of this curve (at larger angles) seems rather poorly fit.  These
+parameters have the same issue of low radii similar to the previous fit.
 
 \end{document}

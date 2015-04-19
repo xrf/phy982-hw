@@ -7,9 +7,10 @@
 #     any entry that isn't "Regular, Bold, Italic, or BoldItalic".
 #
 
+library("methods")
 library("ggplot2")
 library("ggthemes")
-library("extrafont")
+suppressPackageStartupMessages(library("extrafont"))
 
 font <- "Roboto"
 

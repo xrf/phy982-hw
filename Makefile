@@ -23,37 +23,39 @@ clean:
 
 dist/hw1.dat.ok: hw1.hs Common.hs phy982.cabal Setup.hs
 	cabal run
-	mkdir -p dist
-	touch $@
+	@mkdir -p dist
+	@touch $@
 
 hw1-delta.dat hw1-u.dat: dist/hw1.dat.ok
-	touch $@
+	@touch $@
 
 dist/hw1.svg.ok: hw1.r common.r hw1-delta.dat hw1-u.dat
 	./hw1.r
-	mkdir -p dist
-	touch $@
+	@mkdir -p dist
+	@touch $@
 
 hw1-delta.svg hw1-u.svg: dist/hw1.svg.ok
-	touch $@
+	@touch $@
 
 hw1.pdf: hw1.tex common.tex hw1-delta.pdf hw1-u.pdf
-	tools/texc $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
+	tools/texc --silent $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
 
 # ----------------------------------------------------------------------------
 
-dist/hw2.ok: hw2.py common.py
-	mkdir -p dist
+dist/hw2.ok: hw2.py common.py hw2_data.py
+	@mkdir -p dist
 	./hw2.py
-	touch $@
+	@touch $@
 
 hw2-1.dat \
 hw2-1-large-radius.dat \
+hw2-Ni60-n-elastic-low-spinorb.svg \
+hw2-Ni60-n-elastic-high-spinorb.svg \
 hw2-Ni60-p-elastic-low-both.svg \
 hw2-Ni60-p-elastic-low-spinorb.svg \
 hw2-Ni60-p-elastic-low-surf-im.svg \
 hw2-Ni60-p-elastic-low-vol-re.svg: dist/hw2.ok
-	touch $@
+	@touch $@
 
 hw2-1.svg: hw2-1.dat hw2.r common.r
 	./hw2.r $(@:.svg=)
@@ -66,14 +68,16 @@ hw2.pdf: \
     common.tex \
     hw2-1.pdf \
     hw2-1-large-radius.pdf \
+    hw2-Ni60-n-elastic-low-spinorb.pdf \
+    hw2-Ni60-n-elastic-high-spinorb.pdf \
     hw2-Ni60-p-elastic-low-both.pdf \
     hw2-Ni60-p-elastic-low-spinorb.pdf \
     hw2-Ni60-p-elastic-low-surf-im.pdf \
     hw2-Ni60-p-elastic-low-vol-re.pdf \
     hw2-p60Ni-OMP108-Smat.pdf
-	tools/texc $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
+	tools/texc --silent $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
 
 # ----------------------------------------------------------------------------
 
 hw3.pdf: hw3.tex common.tex
-	tools/texc $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
+	tools/texc --silent $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf
