@@ -37,8 +37,8 @@ Dependencies
   - [Python](https://python.org) 3.4+ or 2.7+
     (required for HW2)
 
-      - numpy
-      - pandas
+      - [numpy](http://numpy.org)
+      - [pandas](http://pandas.pydata.org)
 
 ### Plotting
 
@@ -88,7 +88,7 @@ Dependencies
       - url
       - plus an additional meta package via:
 
-            ( cd "$HOME/texmf/tex/latex" && sh ) <tools/sigilz.shar
+            ( cd "`kpsewhich -var-value TEXMFHOME`/tex/latex" && sh ) <tools/sigilz.shar
             texhash
 
 [1]: https://people.nscl.msu.edu/~nunes/phy982
