@@ -7,11 +7,161 @@
 
 \item %1
 
-\item %2
+\item Assume we have a short-ranged, spherically symmetric potential $V(r)$.
+  The incident beam is a plane wave of momentum of $k$ originating from the
+  negative z-axis:
+  \begin{align*}
+    \psi_{\text i}(\bm r) = \E^{\I k z}
+  \end{align*}
+  The scattered wave has the asymptotic form
+  \begin{align*}
+    \psi_{\text f}(\bm r) = f(\theta) \frac{\E^{\I k r}}{r}
+  \end{align*}
+  where we have omitted the azimuth $\phi$ due to symmetry.
+
+  The Schr\"odinger equation of this problem is:
+  \begin{align*}
+    \left(-\frac{\hbar^2}{2 m} \nabla^2 + V(r)\right) \psi(\bm r)
+    = E \psi(\bm r)
+  \end{align*}
+  In spherical coordinates, the Laplacian is given by:
+  \begin{align*}
+  -\nabla^2 = \frac{1}{r^2} (\hat \ell^2 - \frac{\D}{\D r} r^2 \frac{\D}{\D r})
+  \end{align*}
+  where $\hat{\bm \ell}$ is the orbital angular momentum operator, whose
+  eigenvalues are of the form $\ell (\ell + 1)$.  Due to azimuthal symmetry,
+  the only possible angular eigenstates are the ones with $m = 0$, which are
+  simply the Legendre polynomials composed with cosine: $P_\ell(\cos \theta)$.
+
+  Hence, we shall expand the incoming wave as a sum of Legendre polynomials:
+  \begin{align*}
+    \E^{\I k z} =
+    \sum_{\ell = 0}^\infty a_\ell P_\ell(\cos \theta)
+  \end{align*}
+  To do this, we use the orthogonality relations
+  \begin{align*}
+     \int_0^\PI P_\ell(\cos \theta) P_{\ell'}(\cos \theta) \sin \theta \D \theta
+    = \frac{2}{2 \ell + 1} \Kroneckerdelta_{\ell \ell'}
+  \end{align*}
+  to obtain the coefficients:
+  \begin{align*}
+     \frac{2}{2 \ell + 1} a_\ell
+    = \int_0^\PI P_\ell(\cos \theta) \E^{\I k r \cos \theta} \sin \theta \D \theta
+  \end{align*}
+  According to NIST 10.54.3 (\url{http://dlmf.nist.gov/10.54#E2}), this
+  integral is proportional to the spherical Bessel function:
+  \begin{align*}
+    \dots = \frac{2}{(-\I)^\ell} j_\ell(k r)
+  \end{align*}
+  Thus,
+  \begin{align*}
+    \E^{\I k z} =
+    \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell j_\ell(k r) P_\ell(\cos \theta)
+  \end{align*}
+  The spherical Bessel functions $j_\ell$ (regular) and $y_\ell$ (irregular)
+  are related to the Riccati--Hankel functions $\zeta_\ell$ (incoming) and
+  $\xi_\ell$ (outgoing) by:
+  \begin{align*}
+    &\zeta_\ell(s) = s (j_\ell(s) - \I y_\ell(s)) \\
+    &\xi_\ell(s) = s (j_\ell(s) + \I y_\ell(s))
+  \end{align*}
+  Therefore, the plane waves may also be written as:
+  \begin{align*}
+    \E^{\I k z} =
+    \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell
+    \frac{1}{2 k r} (\zeta_\ell(k r) + \xi_\ell(k r)) P_\ell(\cos \theta)
+  \end{align*}
+  In this form, the partial wave S-matrix element $S_\ell$ is defined as the
+  coefficient of the outgoing wave in the asymptotic wave function:
+  \begin{align*}
+    \psi(\bm r) \sim \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell
+    \frac{1}{2 k r} (\zeta_\ell(k r) + S_\ell \xi_\ell(k r)) P_\ell(\cos \theta)
+  \end{align*}
+  The incoming wave must have the same coefficient as that of the plane wave
+  due to the boundary conditions.
+
+  The scattered wave $\psi_{\text f}$ is the difference between the full wave
+  function $\psi$ and the incident plane wave $\psi_{\text i}$, hence its
+  asymptotic form is also their respective difference:
+  \begin{align*}
+    \psi_{\text f}(\bm r) \sim \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell
+    \frac{1}{2 k r} (S_\ell - 1) \xi_\ell(k r) P_\ell(\cos \theta)
+  \end{align*}
+  We can factor out the spherical wave
+  \begin{align*}
+    \psi_{\text f}(\bm r) \sim \frac{\E^{\I k r}}{r}
+    \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell
+    \frac{1}{2 k} (S_\ell - 1) \frac{\xi_\ell(k r)}{\E^{\I k r}} P_\ell(\cos \theta)
+  \end{align*}
+  and use the asymptotic behavior of the Riccati--Hankel functions
+  \begin{align*}
+    \xi_\ell(s) \sim \I^{-(\ell + 1)} \E^{\I s}
+  \end{align*}
+  to simplify the result for large $r$:
+  \begin{align*}
+    \psi_{\text f}(\bm r)
+    &\sim \frac{\E^{\I k r}}{r}
+    \sum_{\ell = 0}^\infty (2 \ell + 1) \I^\ell
+    \frac{1}{2 k} (S_\ell - 1) \I^{-(\ell + 1)} P_\ell(\cos \theta) \\
+    &=\frac{\E^{\I k r}}{r}
+    \frac{1}{2 \I k} \sum_{\ell = 0}^\infty (2 \ell + 1)
+    P_\ell(\cos \theta) (S_\ell - 1)
+  \end{align*}
+  From this, we may read off the scattering amplitude $f$:
+  \begin{align*}
+    f(\theta) =
+    \frac{1}{2 \I k} \sum_{\ell = 0}^\infty (2 \ell + 1)
+    P_\ell(\cos \theta) (S_\ell - 1)
+  \end{align*}
 
 \item %3
 
-\item %4
+\item Assuming a phase shift around a resonance with the usual shape:
+  \begin{align*}
+    \delta(E) = \delta_{\text{bg}}(E) +
+    \operatorname{atan2}\left(\frac{\Gamma}{2}, E_{\text r} - E\right)
+  \end{align*}
+  The S-matrix element can be recovered by exponentiation:
+  \begin{align*}
+    S(E)
+    &= \left(\E^{\I \delta(E)}\right)^2 \\
+    &= \left(\E^{\I \delta_{\text{bg}}(E)}
+      \E^{\I \operatorname{atan2}(\Gamma / 2, E_{\text r} - E)}\right)^2
+  \end{align*}
+  The arguments of $\operatorname{atan2}$ may be interpreted as the phase of a
+  complex number with unit magnitude:
+  \begin{align*}
+    \frac{\I \Gamma / 2 + E_{\text r} - E}{
+    |\I \Gamma / 2 + E_{\text r} - E|}
+  \end{align*}
+  Allowing the exponentiation to cancel the effect of $\operatorname{atan2}$:
+  \begin{align*}
+    S(E)
+    &= \left(\E^{\I \delta(E)}\right)^2 \\
+    &= \left(\E^{\I \delta_{\text{bg}}(E)}
+      \frac{\I \Gamma / 2 + E_{\text r} - E}{
+      |\I \Gamma / 2 + E_{\text r} - E|}\right)^2 \\
+    &= \E^{2 \I \delta_{\text{bg}}(E)}
+      \frac{(\I \Gamma / 2 + E_{\text r} - E)^2}{
+      |\I \Gamma / 2 + E_{\text r} - E|^2} \\
+    &= \E^{2 \I \delta_{\text{bg}}(E)}
+      \frac{\I \Gamma / 2 + E_{\text r} - E}{
+      -\I \Gamma / 2 + E_{\text r} - E} \\
+    &= \E^{2 \I \delta_{\text{bg}}(E)}
+      \frac{E - E_{\text r} - \I \Gamma / 2}{
+      E - E_{\text r} + \I \Gamma / 2}
+  \end{align*}
+  It is evident from this equation that the S-matrix element is singular when
+  $E = E_{\text r} + \I \Gamma / 2$.  In particular, it is a simple pole that,
+  when expanded to first order, has the general form above.
+
+  In the complex energy plane, there exists an eigenstate of the Schr\"odinger
+  equation with a complex energy of $E_{\text r} + \I \Gamma / 2$.  One can
+  infer that it is resonance state because it has a finite lifetime:
+  \begin{align*}
+    \Psi(\bm r; t) \propto \E^{\I (E_{\text r} + \I \Gamma / 2) t / \hbar}
+    = \E^{\I E_{\text r} t / \hbar} \E^{-\Gamma t / (2 \hbar)}
+  \end{align*}
 
 \item %5
 
