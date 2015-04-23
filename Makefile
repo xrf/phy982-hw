@@ -7,9 +7,10 @@ help:
 	@echo "  - all"
 	@echo "  - hw1.pdf"
 	@echo "  - hw2.pdf"
+	@echo "  - hw3.pdf"
 	@echo "  - clean"
 
-all: hw1.pdf hw2.pdf
+all: hw1.pdf hw2.pdf hw3.pdf
 
 clean:
 	rm -f hw?.aux hw?.bib hw?.blg hw?.log hw?.out hw?.pdf hw?.thm \
@@ -79,5 +80,5 @@ hw2.pdf: \
 
 # ----------------------------------------------------------------------------
 
-hw3.pdf: hw3.tex common.tex
+hw3.pdf: hw3.tex common.tex hw3-comlab.pdf
 	tools/texc --silent $(@:.pdf=) common.tex $(@:.pdf=)-*.pdf

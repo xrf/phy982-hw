@@ -5,71 +5,79 @@
 
 \begin{enumerate}
 
-\item \part*{Derive the transformation from CM to Lab cross sections.}
+\item
+  \begin{figure}
+    \includegraphics[width=\textwidth]{hw3-comlab.pdf}
+    \caption{The relation between CM and Lab frames.}
+    \label{fig:comlab}
+  \end{figure}
 
-\begin{figure}
-\includegraphics[width=0.8\textwidth]{hw3-comlab.pdf}\protect\caption{The relation between CM and Lab frames.}
-\end{figure}
-
-
-The relation ship between the center of mass and lab velocites is
-given by the following equations and can be seen in the figure:
-
-\begin{eqnarray*}
-v{}_{c}^{\prime}\sin\theta=v_{c}\sin\theta_{lab} & \dot{S}+v_{c}^{\prime}\cos\theta=v_{c}\cos\theta_{lab} & \phi=\phi_{lab}\\
- & \vec{v_{c}}=\vec{v_{c}^{\prime}}+\dot{\vec{S}}
-\end{eqnarray*}
-
-
-The parameter $\rho$ is defined as: $\rho\equiv\frac{\dot{S}}{v_{c}'}$.
-The relationship between the lab and cm scattering angle can be expessed
-as: $\tan\theta_{lab}=\frac{\sin\theta}{\rho+\cos\theta}$. We also
-know that conservation of flux requires the scattering crossection
-of an infinitessimal solid angle is conseerved by the chang of referance
-frame. This leads to the following expressison:
-
-\[
-\sigma_{lab}(\theta_{lab},\phi_{lab})d\phi_{lab}\sin\theta_{lab}d\theta_{lab}=\sigma(\theta.\phi)d\phi\sin\theta d\theta\Rightarrow\sigma_{lab}(\theta_{lab},\phi_{lab})=\sigma(\theta,\phi)\frac{d\phi}{d\phi_{lab}}\frac{\sin\theta}{\sin\theta_{lab}}\frac{d\theta}{d\theta_{lab}}
-\]
-
-
-Clearly$\frac{d\phi}{d\phi_{lab}}=1$ and:
-
-\[
-\frac{\sin\theta}{\sin\theta_{lab}}=\frac{v_{c}}{v_{c}^{\prime}}=\frac{\sqrt{\vec{v_{c}}\centerdot\vec{v_{c}}}}{v'}=\frac{\sqrt{v_{c}^{2}+2v_{c}\dot{S}\cos\theta+\dot{S}^{2}}}{v'}=\sqrt{1+2\rho\cos\theta+\rho^{2}}
-\]
-
-
-To find the the derivative of $\theta$:
-
-\[
-\frac{d}{d\theta_{lab}}\left(\tan\theta_{lab}\right)=\frac{d}{d\theta_{lab}}\left(\frac{\sin\theta}{\rho+\cos\theta}\right)
-\]
-
-
-\[
-\sec^{2}\theta_{lab}=\frac{1+\rho\cos\theta}{\left(\rho+\cos\theta\right)^{2}}\frac{d\theta}{d\theta_{lab}}
-\]
-
-
-\[
-\Rightarrow\frac{d\theta}{d\theta_{lab}}=\cos^{2}\theta_{lab}\left(\frac{1+\rho\cos\theta}{\left(\rho+\cos\theta\right)^{2}}\right)
-\]
-
-
-But:
-
-\[
-\cos^{2}\theta_{lab}=\left(\frac{\dot{S+v_{c}^{\prime}\cos\theta}}{v_{c}}\right)^{2}=\left(\frac{v_{c}^{\prime}}{v_{c}}\right)^{2}\left(\rho+\cos\theta\right)^{2}\Rightarrow\frac{d\theta}{d\theta_{lab}}=\left(\frac{v_{c}^{\prime}}{v_{c}}\right)^{2}\left(1+\rho\cos\theta\right)
-\]
-
-
-So we have:
-
-\[
-\sigma_{lab}\left(\theta,\phi\right)=\sigma(\theta,\phi)\left(\frac{v_{c}^{\prime}}{v_{c}}\right)^{3}\frac{1}{1+\rho\cos\theta}=\sigma(\theta,\phi)\frac{\left(1+2\rho\cos\theta+\rho^{2}\right)^{3/2}}{1+\rho\cos\theta}
-\]
- QED.
+  The relationship between the center-of-mass and lab velocities is given by
+  the following equations and can be seen in Figure \ref{fig:comlab}:
+  \begin{align*}
+    v_{\text c}' \sin \theta &= v_{\text c} \sin \theta_{\text{lab}} \\
+    \dot S + v_{\text c}' \cos\theta &= v_{\text c} \cos \theta_{\text{lab}} \\
+    \phi &= \phi_{\text{lab}} \\
+    \bm v_{\text c} &= \bm v_{\text c}'+ \dot{\bm S}
+  \end{align*}
+  Define the parameter $\rho \equiv \dot S / v_{\text c}'$.  The relationship between
+  the lab and center-of-mass scattering angles can be expressed as:
+  \begin{align*}
+  \tan\theta_{\text{lab}}=\frac{\sin\theta}{\rho+\cos\theta}
+  \end{align*}
+  We also know that conservation of flux requires the scattering cross section
+  in an infinitesimal solid angle to be conserved by the change in reference
+  frame.  This leads to the following expression:
+  \begin{align*}
+    &\frac{\D \sigma_{\text{lab}}}{\D \Omega} (\theta_{\text{lab}}, \phi_{\text{lab}})
+      \D \phi_{\text{lab}} \sin \theta_{\text{lab}} \D \theta_{\text{lab}}
+      = \frac{\D \sigma}{\D \Omega} (\theta, \phi)
+      \D \phi \sin \theta \D \theta \\
+    &\Rightarrow
+      \frac{\D \sigma_{\text{lab}}}{\D \Omega}
+      (\theta_{\text{lab}}, \phi_{\text{lab}})
+      = \frac{\D \sigma}{\D \Omega} (\theta, \phi)
+      \frac{\D \phi}{\D \phi_{\text{lab}}}
+      \frac{\sin \theta}{\sin \theta_{\text{lab}}}
+      \frac{\D \theta}{\D \theta_{\text{lab}}}
+  \end{align*}
+  Clearly, $\D \phi / \D\phi_{\text{lab}} = 1$ and
+  \begin{align*}
+    \frac{\sin \theta}{\sin \theta_{\text{lab}}}
+    = \frac{v_{\text c}}{v_{\text c}'}
+    = \frac{\sqrt{\bm v_{\text c} \cdot \bm v_{\text c}}}{v'}
+    = \frac{\sqrt{v_{\text c}^2 + 2 v_{\text c} \dot S \cos \theta + \dot S^2}}{v'}
+    = \sqrt{1 + 2 \rho \cos \theta + \rho^2}
+  \end{align*}
+  To find the the derivative of $\theta$:
+  \begin{align*}
+    &\frac{\D}{\D \theta_{\text{lab}}} \tan \theta_{\text{lab}} =
+      \frac{\D}{\D \theta_{\text{lab}}} \frac{\sin \theta}{\rho + \cos \theta} \\
+    &\sec^2 \theta_{\text{lab}}
+      = \frac{1 + \rho \cos \theta}{(\rho + \cos\theta)^2}
+      \frac{\D \theta}{\D \theta_{\text{lab}}} \\
+    &\Rightarrow \frac{\D \theta}{\D \theta_{\text{lab}}} =
+      \cos^2 \theta_{\text{lab}}
+      \frac{1 + \rho \cos \theta}{\left(\rho + \cos \theta\right)^2}
+  \end{align*}
+  But
+  \begin{align*}
+    &\cos^2 \theta_{\text{lab}}
+    = \left(\frac{\dot S + v_{\text c}' \cos \theta}{v_{\text c}}\right)^2
+    = \left(\frac{v_{\text c}'}{v_{\text c}}\right)^2 (\rho + \cos \theta)^2 \\
+    &\Rightarrow \frac{\D \theta}{\D \theta_{\text{lab}}}
+    =\left(\frac{v_{\text c}'}{v_{\text c}}\right)^2 \left(1 + \rho \cos \theta\right)
+  \end{align*}
+  So we have:
+  \begin{align*}
+    \frac{\D \sigma_{\text{lab}}}{\D \Omega} (\theta, \phi)
+    &= \left(\frac{v_{\text c}'}{v_{\text c}}\right)^3
+      \frac{1}{1 + \rho \cos \theta}
+      \frac{\D \sigma}{\D \Omega} (\theta, \phi) \\
+    &= \frac{\left(1 + 2 \rho \cos \theta + \rho^2 \right)^{3/2}
+      }{1 + \rho \cos \theta}
+      \frac{\D \sigma}{\D \Omega} (\theta, \phi)
+  \end{align*}
 
 \item Assume we have a short-ranged, spherically symmetric potential $V(r)$.
   The incident beam is a plane wave of momentum of $k$ originating from the
@@ -103,10 +111,11 @@ So we have:
     \sum_{\ell = 0}^\infty a_\ell P_\ell(\cos \theta)
   \end{align*}
   To do this, we use the orthogonality relations
-  \begin{align*}
+  \begin{align}
      \int_0^\PI P_\ell(\cos \theta) P_{\ell'}(\cos \theta) \sin \theta \D \theta
     = \frac{2}{2 \ell + 1} \Kroneckerdelta_{\ell \ell'}
-  \end{align*}
+    \label{eq:legendre-orthogonality}
+  \end{align}
   to obtain the coefficients:
   \begin{align*}
      \frac{2}{2 \ell + 1} a_\ell
@@ -178,42 +187,53 @@ So we have:
     P_\ell(\cos \theta) (S_\ell - 1)
   \end{align*}
 
-\item Starting witht the relationship between cross section and scattering
-length we can use the result of problem 2.
-
-\begin{eqnarray*}
-\sigma_{el}\left(\theta\right) & =|f(\theta)|^{2} & =\left\Vert \frac{1}{2\boldsymbol{i}k}\right\Vert ^{2}\left\Vert \sum_{L=0}^{\infty}\left(2L+1\right)P_{L}\left(\cos\theta\right)\left(S_{L}-1\right)\right\Vert ^{2}\\
- &  & {\displaystyle =\frac{1}{4k^{2}}\sum_{L,L^{\prime}=0}^{\infty}\left(2L+1\right)P_{L}\left(\cos\theta\right)\left(S_{L}-1\right)\left(2L^{\prime}+1\right)P_{L}^{*}\left(\cos\theta\right)\left(S_{L^{\prime}}^{*}-1\right)}
-\end{eqnarray*}
-
-
-Using the normalization condition for the Legendre polynomial $\int_{-1}^{+1}P_{L^{\prime}}^{*}(x)P_{L}(x)dx=\frac{2\delta_{LL^{\prime}}}{2L+1}$:
-
-\begin{eqnarray*}
-\int_{0}^{2\pi}d\phi\int_{0}^{\pi}d\theta\sigma_{el}\left(\theta\right) & =\frac{\int_{0}^{2\pi}d\phi}{4k^{2}}\sum_{L,L^{\prime}=0}^{\infty}\left(2L+1\right)\left(2L^{\prime}+1\right)\left(S_{L}-1\right)\left(S_{L^{\prime}}^{*}-1\right))\int_{0}^{\pi}P_{L}\left(\cos\theta\right)P_{L}^{*}\left(\cos\theta\right)d\theta\\
- & =\frac{2\pi}{4k^{2}}\sum_{L,L^{\prime}=0}^{\infty}\left(2L+1\right)\left(2L^{\prime}+1\right)\left(S_{L}-1\right)\left(S_{L^{\prime}}^{*}-1\right)\frac{2\delta_{LL^{\prime}}}{2L+1}
-\end{eqnarray*}
-
-
-Evaluating the sum over $L^{\prime}$yields:
-
-\[
-\sigma_{el}==\frac{\pi}{k^{2}}\sum_{L=0}^{\infty}\left(2L+1\right)\left(\|S_{L}\|^{2}-\left(S_{L}+S_{L}^{*}\right)+1\right)=\frac{2\pi}{k^{2}}\sum_{L=0}^{\infty}\left(2L+1\right)\left(1-Re(S_{L})\right)
-\]
-
-
-Where I have used the fact that $\|S_{L}\|^{2}=1$in the case of elastic
-scattering. We can write $S_{L}=\exp(\mathbf{i}\phi)\Rightarrow\log(S_{L})=i\phi$
-let $\delta_{L}=\frac{\log(S_{L})}{2\mathbf{i}}+N(E)\pi=\frac{\phi}{2}$
-be the regularized phase shift. This implies $Re(S_{L})=\cos\phi=\cos^{2}\frac{\phi}{2}-\sin^{2}\frac{\phi}{2}$
-therefore we have:
-
-\[
-\sigma_{el}=\frac{2\pi}{k^{2}}\sum_{L=0}^{\infty}\left(2L+1\right)\left(1-\left(\cos^{2}\delta_{L}-\sin^{2}\delta_{L}\right)\right)=\frac{4\pi}{k^{2}}\sum_{L=0}^{\infty}\left(2L+1\right)\sin^{2}\delta_{L}
-\]
-
-
-QED.
+\item Starting with the relationship between cross section and scattering
+  length we can use the result of the previous problem.
+  \begin{align*}
+    \frac{\D \sigma_{\text{el}}}{\D \Omega} (\theta)
+    &= |f(\theta)|^2 \\
+    &= \left|\frac{1}{2 \I k}\right|^2
+      \left|\sum_{\ell = 0}^\infty (2 \ell + 1)
+      P_\ell (\cos \theta) (S_\ell - 1)\right|^2 \\
+    &= \frac{1}{4 k^2} \sum_{\ell, \ell' = 0}^\infty
+      (2 \ell + 1) P_\ell (\cos \theta) (S_\ell - 1)
+      (2 \ell' + 1) P_\ell^* (\cos \theta) (S_{\ell'}^* - 1)
+  \end{align*}
+  Using the orthogonality of the Legendre polynomials
+  \eqref{legendre-orthogonality},
+  \begin{align*}
+    &\eqbegin 2 \PI \int_0^\PI \frac{\D \sigma_{\text{el}}}{\D \Omega} (\theta)
+      \sin \theta \D \theta \\
+    &= \frac{\PI}{2 k^2}
+      \sum_{\ell, \ell' = 0}^\infty
+      (2 \ell + 1) (2 \ell' + 1)
+      (S_\ell - 1) (S_{\ell'}^* - 1)
+      \int_0^\PI P_\ell(\cos \theta) P_\ell^*(\cos \theta) \D \theta \\
+    &= \frac{\PI}{2 k^2}
+      \sum_{\ell, \ell' = 0}^\infty
+      (2 \ell + 1) (2 \ell' + 1) (S_\ell - 1) (S_{\ell'}^* - 1)
+      \frac{2 \Kroneckerdelta_{\ell \ell'}}{2 \ell + 1}
+  \end{align*}
+  Evaluating the sum over $\ell'$ yields:
+  \begin{align*}
+    \frac{\D \sigma_{\text{el}}}{\D \Omega}(\theta)
+    &= \frac{\PI}{k^2} \sum_{\ell = 0}^\infty (2 \ell + 1) (|S_\ell|^2 - (S_\ell + S_\ell^*) + 1)
+    = \frac{2 \PI}{k^2} \sum_{\ell = 0}^\infty (2 \ell + 1) (1 - \Re S_{\ell})
+  \end{align*}
+  Here we have used the fact that $|S_\ell|^2 = 1$ in elastic scattering.  We
+  can write $S_\ell = \E^{\I \phi} \Rightarrow \log S_{\ell} = \I \phi$.  Let
+  $\delta_{\ell} = \frac{\log S_{\ell}}{2 \I} = \frac{\phi}{2}$ be the phase
+  shift. This implies
+  \begin{align*}
+    \Re S_{\ell} = \cos \phi = \cos^2 \frac{\phi}{2} - \sin^2 \frac{\phi}{2}
+  \end{align*}
+  Therefore we have
+  \begin{align*}
+    \sigma_{\text{el}}
+    &= \frac{2 \PI}{k^2} \sum_{\ell = 0}^\infty (2 \ell + 1)
+      (1 - (\cos^2 \delta_\ell - \sin^2 \delta_\ell)) \\
+    &= \frac{4 \PI}{k^2} \sum_{\ell = 0}^\infty (2 \ell + 1) \sin^2 \delta_\ell
+\end{align*}
 
 \item Assuming a phase shift around a resonance with the usual shape:
   \begin{align*}
@@ -263,191 +283,217 @@ QED.
   \end{align*}
 
 \item Starting from Fermi's golden rule we have:
+  \begin{align*}
+    \D J_{f i} = |M_{f i}|^2 2 \PI \delta(E_f - E_i) \D N_{f}
+  \end{align*}
+  Our initial and final states consist of free particles:
+  \begin{align*}
+    &\ket{\Psi_n} = \frac{1}{\sqrt V} \E^{\I \bm p_n \cdot \bm r} \\
+    &\Rightarrow M_{f i}
+      = \brakket{\Psi_f}{U(\bm r)}{\Psi_i}
+      = \frac{1}{V} \int_{\Real^3}
+      \E^{\I \bm p_f \cdot \bm r} U(\bm r) \E^{\I \bm p_i \cdot \bm r} \D \bm r
+  \end{align*}
+  Where $V$ is an arbitrary normalization factor. Since we are interested in
+  the Coulomb potential of a nucleus with atomic number $Z$ we have
+  $U(\bm r) = Z_1 Z_2 \alpha / r$ thus:
+  \begin{align*}
+    M_{fi} = \frac{1}{V} \int \E^{\I \bm q \cdot \bm r} \frac{Z_1 Z_2 \alpha}{r} \D \bm r
+    = \frac{Z_1 Z_2 \alpha}{V} \frac{4 \PI}{q^2}
+  \end{align*}
+  where we have used the definition of the momentum transfer
+  $\bm q = \bm p_f - \bm p_i$ and the 3D Fourier trasnsform of the Coulomb
+  potential $\mathcal F_{\bm r} (1 / r) = 4 \PI / k^2$.
 
-\[
-dJ=\|M_{fi}\|^{2}dN_{f}2\pi\delta\left(E_{f}-E_{i}\right)
-\]
+  We can use the canonical relationship between particle current and cross
+  section: $\D J = j N \D \sigma$ where $j$ is the magnitude of the
+  probability current given by
+  \begin{align*}
+    \bm j = \frac{\hbar}{2 \I m} (\Psi^* \nabla \Psi - \Psi \nabla \Psi^*)
+    = \frac{\hbar \bm p}{m V} = \frac{\hbar \bm v}{V}
+  \end{align*}
+  So the cross section is
+  \begin{align*}
+    \D \sigma = \frac{\D J}{j_i N}
+    = \frac{|M_{f i}|^2 V}{4 \PI^2 v_i} \delta(E_f - E_i) \D \bm p_f
+  \end{align*}
+  Using $\D \bm p_f = p_f^2 \D p_f \D \Omega$ and integrating our equation to
+  enforce energy conservation:
+  \begin{align*}
+    \frac{\D \sigma}{\D \Omega}
+    &= \frac{|M_{f i}|^2 V}{4 \PI^2 v_i}
+      \int \D p_f p_f^2 \delta(E_f - E_i) \\
+    &= \frac{|M_{f i}|^2 V}{4 \PI^2 v_i}
+      \int \frac{\D p_f}{\D E_f} \D E_f p_f^2 \delta(E_f-E_i) \\
+    &= \frac{|M_{f i}|^2 V p_f^2}{4 \PI^2 v_i v_f} \\
+    &= \frac{4 (Z_1 Z_2)^2 \alpha^2 p_f^2}{q^4 v_i v_f}
+  \end{align*}
+  Since our collision is elastic we have $p_f = p_i = p$ so
+  $q^2 = (\bm p_f - \bm p_i)^2 = 4 p^2 \sin^2(\theta / 2)$.  Substituting:
+  \begin{align*}
+    \frac{\D \sigma}{\D \Omega}
+    = \frac{4 (Z_1 Z_2)^2 \alpha^2 p^2}{16 p^4 \sin^4 \frac{\theta}{2} v_i v_f}
+    = \frac{(Z_1 Z_2)^2 \alpha^2}{4 \hbar^2 k^2 \sin^4 \frac{\theta}{2} v^2}
+    = \frac{(Z_1 Z_2)^2 \alpha^2 \mu}{4 \hbar^2 k^2 \sin^4 \frac{\theta}{2} 2 E}
+    = \frac{\eta^2}{4 k^2 \sin^4 \frac{\theta}{2}}
+  \end{align*}
+  where the Sommerfeld parameter $\eta$ is given by:
+  \begin{align*}
+    \eta \equiv \frac{Z_1 Z_2 e^2}{\hbar} \sqrt{\frac{\mu}{2 E}}
+  \end{align*}
 
+\item The initial bound state is given by the Yukawa form:
+  \begin{align*}
+    \Phi_{\text b}^0(\bm r) = \sqrt{2 \gamma} \frac{\E^{-\gamma r}}{r} Y_0^0
+  \end{align*}
+  where $\gamma$ is the initial wave number:
+  \begin{align}
+    \gamma = \sqrt{2 \mu |E_{\text b}| / \hbar^2}
+    \label{eq:gamma-wavenum}
+  \end{align}
 
-Free particles compose our initial and final states:
+  The final scattering state is given by a p-wave plane wave of wave number
+  $k$:
+  \begin{align*}
+%    \Psi_{\text i}(\bm r) = \sqrt{12 \PI} \I j_1(k r) Y_1^0(\hat{\bm r})
+    \Psi_{\text i}^0(\bm r) = \I k j_1(k r) Y_1^0(\hat{\bm r})
+  \end{align*}
+  Here, we have normalized the wave such that
+  \begin{align*}
+    \int_0^\infty \Abs{\I k r}^2 j_1(k r) j_1(k' r) \D r
+    = \frac{\PI}{2} \delta(k - k')
+  \end{align*}
 
-\[
-{\displaystyle |\Psi_{i(f)}>}=\frac{1}{\sqrt{V}}\exp\left(\mathbf{i}\vec{p_{f(i)}}\centerdot\vec{r}\right)\Rightarrow M_{fi}=<\Psi_{f}|U(\vec{r})|\Psi_{i}>=\frac{1}{V}\int\exp\left(\mathbf{i}\vec{p_{f}}\centerdot\vec{r}\right)U(x)\exp\left(\mathbf{i}\vec{p_{i}}\centerdot\vec{r}\right)d^{3}r
-\]
-
-
-Where $V$ is an arbitrary normalization factor. Since we are interested
-in the Coulomb potential of a nucleus with atomic number Z we have
-$U(\vec{r})=\frac{Z_{1}Z_{2}\alpha}{r}$thus:
-
-\[
-M_{fi}=\frac{1}{V}\int\exp\left(\mathbf{i}\vec{q}\centerdot\vec{r}\right)\frac{Z_{1}Z_{2}\alpha}{r}d^{3}r=\frac{Z_{1}Z_{2}\alpha}{V}\frac{4\pi}{q^{2}}
-\]
-
-
-Where I have used the definition of the momentum transfer $\vec{q}=\vec{p_{f}}-\vec{p_{i}}$and
-the 3-d Fourier trasnsform of the Coulomb potential $\mathcal{F}(\frac{1}{r})=\frac{4\pi}{k^{2}}$.
-
-We can use the cannonical relationship between particle current and
-cross section: $dJ=jNd\sigma$ where $j$ is the magnitude of the
-probability current given by:
-
-\[
-\vec{j}=\frac{\hbar}{2m\mathbf{i}}\left(\Psi^{*}\nabla\Psi-\Psi\nabla\Psi^{*}\right)=\frac{\hbar\vec{p}}{mV}=\frac{\hbar\vec{v}}{V}
-\]
-
-
-So the cross section is:
-
-\[
-d\sigma=\frac{dJ}{j_{i}N}=\frac{\|M_{fi}\|^{2}V}{4\pi^{2}v_{i}}d^{3}p_{f}\delta\left(E_{f}-E_{i}\right)
-\]
-
-
-Using $d^{3}p_{f}=p_{f}^{2}dp_{f}d\Omega$ and integrating our equation
-to enforce energy conservation:
-
-\[
-\frac{d\sigma}{d\Omega}=\frac{\|M_{fi}\|^{2}V}{4\pi^{2}v_{i}}\int dp_{f}p_{f}^{2}\delta(E_{f}-E_{i})=\frac{\|M_{fi}\|^{2}V}{4\pi^{2}v_{i}}\int\frac{dp_{f}}{dE_{f}}dE{}_{f}p_{f}^{2}\delta(E_{f}-E_{i})
-\]
-
-
-\[
-=\frac{\|M_{fi}\|^{2}Vp_{f}^{2}}{4\pi^{2}v_{i}v_{f}}=\frac{4\left(Z_{1}Z_{2}\right)^{2}\alpha^{2}p_{f}^{2}}{q^{4}v_{i}v_{f}}
-\]
-
-
-Since our colision is eleastic we have $p_{f}=p_{i}=p$so $\vec{q}^{2}=\left(\vec{p_{f}}-\vec{p_{i}}\right)^{2}=4p^{2}\sin^{2}\frac{\theta}{2}$
-substituting:
-
-\[
-\frac{d\sigma}{d\Omega}=\frac{4\left(Z_{1}Z_{2}\right)^{2}\alpha^{2}p^{2}}{16p^{4}\sin^{4}\frac{\theta}{2}v_{i}v_{f}}=\frac{\left(Z_{1}Z_{2}\right)^{2}\alpha^{2}}{4\hbar^{2}k^{2}\sin^{4}\frac{\theta}{2}v^{2}}=\frac{\left(Z_{1}Z_{2}\right)^{2}\alpha^{2}\mu}{4\hbar^{2}k^{2}\sin^{4}\frac{\theta}{2}2E}=\frac{\eta^{2}}{4k^{2}\sin^{4}\frac{\theta}{2}}
-\]
-
-
-Where $\eta=\frac{Z_{1}Z_{2}e^{2}}{\hbar}\left(\frac{\mu}{2E}\right)^{1/2}$
-is the Sommerfield parameter.
-
-\item %6
+  To compute the reduced transition probability, we use equation (4.7.24) from
+  \textit{Thompson and Nunes} with $J = 1$:
+  \begin{align*}
+    \frac{\D B}{\D E} =
+    \frac{1}{(2 J_{\text i} + 1) \hbar v_{\text i}}
+    \sum_{m_{\text b} M M_{\text i}}
+    \left|\Brakket{\Phi_{\text b}^{m_{\text b}}}{\mathcal M_{1 M}^{Z_{\text c} e}
+    }{\sqrt{\frac{2}{\PI}} \Psi_{\text i}^{M_{\text i}}}\right|^2
+  \end{align*}
+  Although the equation is meant for capture reactions, it should work just as
+  well for photodisintegration, the time-reversed process.  The matrix element
+  is given by:
+  \begin{align*}
+    &\eqbegin \Brakket{\Phi_{\text b}^{m_{\text b}}}{\mathcal M_{1 M}^{Z_{\text c} e}
+    }{\sqrt{\frac{2}{\PI}} \Psi_{\text i}^{M_{\text i}}} \\
+    &= \Brakket{\sqrt{2 \gamma} \frac{\E^{-\gamma r}}{r} Y_0^0
+      \Kroneckerdelta_{m_{\text b} 0}}{
+      Z_{\text c} e \left(-\frac{1}{A_{\text c} + 1} r\right)^1 Y_1^M(\hat{\bm r})
+      }{\sqrt{\frac{2}{\PI}} \I k j_1(k r) Y_1^0(\hat{\bm r})
+      \Kroneckerdelta_{M_{\text i} 0}} \\
+    &= -\I k \sqrt{\frac{4 \gamma}{\PI}}
+      \frac{Z_{\text c} e}{A_{\text c} + 1}
+      \Kroneckerdelta_{m_{\text b} 0} \Kroneckerdelta_{M_{\text i} 0}
+      \Brakket{\frac{\E^{-\gamma r}}{r}}{r}{j_1(k r)}_r
+      \Brakket{Y_0^0}{Y_1^M(\hat{\bm r})}{Y_1^0(\hat{\bm r})}_\Omega \\
+    &= -\frac{\I k \sqrt{\gamma}}{\PI}
+      \frac{Z_{\text c} e}{A_{\text c} + 1}
+      \Kroneckerdelta_{m_{\text b} 0} \Kroneckerdelta_{M_{\text i} 0}
+      \avg{\E^{-\gamma r} j_1(k r)}_r
+      \avg{Y_1^M(\hat{\bm r}) Y_1^0(\hat{\bm r})}_\Omega \\
+    &= -\frac{\I k \sqrt{\gamma}}{\PI}
+      \frac{Z_{\text c} e}{A_{\text c} + 1}
+      \Kroneckerdelta_{m_{\text b} 0} \Kroneckerdelta_{M_{\text i} 0}
+      \frac{2 k}{(k^2 + \gamma^2)^2} \Kroneckerdelta_{M 0} \\
+    &= -\frac{2 \I \sqrt{\gamma}}{\PI}
+      \frac{Z_{\text c} e}{A_{\text c} + 1}
+      \frac{k^2}{(k^2 + \gamma^2)^2}
+      \Kroneckerdelta_{m_{\text b} 0}
+      \Kroneckerdelta_{M_{\text i} 0}
+      \Kroneckerdelta_{M 0}
+  \end{align*}
+  Putting this back into the original equation and setting $J_{\text i} = 0$:
+  \begin{align*}
+    \frac{\D B}{\D E} =
+    \frac{1}{\hbar v_{\text i}}
+    \frac{4 \gamma}{\PI^2}
+    \left(\frac{Z_{\text c} e}{A_{\text c} + 1}\right)^2
+    \frac{k^4}{(k^2 + \gamma^2)^4}
+  \end{align*}
+  Substituting $v_{\text i} = \sqrt{2 E / \mu}$, $k^2 = 2 \mu E / \hbar^2$,
+  and also \eqref{gamma-wavenum}, we obtain:
+  \begin{align*}
+    \frac{\D B}{\D E} =
+    \frac{\hbar^2}{\PI^2 \mu}
+    \left(\frac{Z_{\text c} e}{A_{\text c} + 1}\right)^2
+    \frac{\sqrt{E_{\text b} E^3}}{(E_{\text b} + E)^4}
+  \end{align*}
 
 \item It is useful to assert some form of the non-unique \emph{wave operator}
-defined by the relationship$\Omega|\Phi_{0}>\equiv|\Psi_{0}>$ where
-$|\Phi_{0}>$is some reference state and $|\Psi_{0}>$ is the exact
-ground state wave function. We want a form that is \emph{consistent}
-\emph{with the Schroedinger equation} (SE). I will choose the form
-used in RSPT $\Omega=P+R_{H}HP$ where $R_{H}\equiv Q\left(P+Q\left(E-H\right)Q\right)^{-1}Q=\left(E-QHQ\right)^{-1}Q=Q\left(E-QHQ\right)^{-1}=QR_{H}=R_{H}Q$
-is the reduced resolvent of the $H$. Note that $P$ and $Q$ are
-projection operators where $P=|\Phi_{0}><\Phi_{0}|$ and $Q$ is its
-orthogonal complement. Now to show this wave operator is consistent
-with the SE :
-
-\begin{flushleft}
-\begin{eqnarray*}
- & \left(E-H\right)|\Psi_{0}>=(P+Q)\left(E-H\right)|\Psi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)|\Psi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)\Omega|\Phi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)\left(P+R_{H}HP\right)|\Phi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)\left(|\Phi_{0}>+R_{H}H|\Phi_{0}>\right)\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)P|\Phi_{0}>+Q\left(E-H\right)\left(E-H\right)^{-1}QH|\Phi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>+Q\left(E-H\right)|\Phi_{0}>+QH|\Phi_{0}>\\
- & =P\left(E-H\right)|\Psi_{0}>=|\Phi_{0}><\Phi_{0}\left(E-H\right)|\Psi_{0}>=0
-\end{eqnarray*}
-
-\par\end{flushleft}
-
-Therefore this form of the wave operator is consistent with the SE.
-Now we will use the wave operator to derive the form of the effective
-Hamiltonian starting from the SE:
-
-\[
-\left(E-H\right)|\Psi>=E|\Psi>-H\Omega|\Phi_{0}>=E|\Psi>-H\left(P+R_{H}HP\right)|\Phi_{0}>
-\]
-
-
-\[
-=E|\Psi>-H\left(P+QR_{H}QHP\right)|\Phi_{0}>=E|\Psi>-H\left(P+Q(E-QHQ)^{-1}QHP\right)|\Phi_{0}>
-\]
-
-
-Multiplying by $P$ on the left:
-
-\[
-\Rightarrow PE|\Psi>-PH\left(P+Q(E-QHQ)^{-1}QHP\right)|\Phi_{0}>
-\]
-
-
-\[
-=E|\Phi_{0}>-(PHP+PHQ(E-QHQ)^{-1}QHP)|\Phi_{0}>=\left(E-H_{eff}\right)|\Phi_{0}>=0
-\]
-
-
-We identify the effective Hamiltonian as desired:
-
-\[
-H_{eff}=PHP+PHQ(E-QHQ)^{-1}QHP
-\]
-
-
-The optical potential is derived by splitting the Hamiltonian into
-teh following pieces $H=T_{0}+H_{A}+V$ where $H_{A}$ is the Hamiltonia
-that describes the internal degrees of freedom in the target. Note
-that because $E_{0}\equiv0$ that$H_{A}|\Phi_{0}>=0\Rightarrow H_{A}P=PH_{A}=0$
-and $PT_{0}=T_{0}|\Phi_{0}>$since $|\Phi_{0}>$does not depend on
-the projectile degrees of freedom. So we can write the effective Hamiltonian
-as:
-
-\[
-H_{eff}=P\left(T_{0}+H_{A}+V\right)P+P\left(T_{0}+H_{A}+V\right)Q(E-QHQ)^{-1}Q\left(T_{0}+H_{A}+V\right)P
-\]
-
-
-\[
-=P\left(T_{0}+V\right)P+PVQ(E-QHQ)^{-1}QVP
-\]
-
-
-\[
-=T_{0}P+PVP+PVQ(E-QHQ)^{-1}QVP
-\]
-
-
-If we substitute into SE then:
-
-\[
-\left(E-\left(T_{0}P+PVP+PVQ(E-QHQ)^{-1}QVP\right)\right)|\Psi>=0
-\]
-
-
-\[
-\left(E-T_{0}+PVP+PVQ(E-QHQ)^{-1}QVP\right)|\chi_{0}\Phi_{0}>=0
-\]
-
-
-\[
-\left(E-T_{0}+|\Phi_{0}><\Phi_{0}|V|\Phi_{0}><\Phi_{0}|+|\Phi_{0}><\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}><\Phi_{0}|\right)|\chi_{0}\Phi_{0}>=0
-\]
-
-
-\[
-\left(E-T_{0}\right)|\chi_{0}\Phi_{0}>+|\Phi_{0}><\Phi_{0}|V|\Phi_{0}>|\chi_{0}>+|\Phi_{0}><\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}>|\chi_{0}>=0
-\]
-
-
-Multiplying on the left with $<\Phi_{0}|$ yields:
-
-\[
-\left(E-T_{0}+<\Phi_{0}|V|\Phi_{0}>+<\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}>\right)|\chi_{0}>=\left(E-T_{0}+U_{opt}\right)|\chi_{0}>=0
-\]
-
-
-Where we can now I dentify the optical potential as:
-
-\[
-U_{opt}=<\Phi_{0}|V|\Phi_{0}>+<\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}>
-\]
-
-
-QED.
+  defined by the relationship $\Omega \ket{\Phi_0} \equiv \ket{\Psi_0}$ where
+  $\ket{\Phi_0}$ is some reference state and $\ket{\Psi_0}$ is the exact
+  ground state.  We want a form that is \emph{consistent with the
+    Schr\"odinger equation} (SE).  We will choose the form used in
+  Rayleigh--Schr\"odinger perturbation theory $\Omega = P + R_H H P$ where
+  $R_{H} \equiv Q (P + Q (E - H) Q)^{-1} Q = (E - Q H Q)^{-1} Q = Q (E - Q H
+  Q)^{-1} = Q R_{H} = R_{H} Q$
+  is the reduced resolvent of $H$.  Note that $P$ and $Q$ are projection
+  operators where $P = \ket{\Phi_0} \bra{\Phi_0}$ and $Q$ is its orthogonal
+  complement.  Now to show this wave operator is consistent with the SE:
+  \begin{align*}
+    \left(E-H\right)|\Psi_{0}\rangle
+    &=(P+Q)\left(E-H\right)|\Psi_{0}\rangle \\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)|\Psi_{0}\rangle\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)\Omega|\Phi_{0}\rangle\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)\left(P+R_{H}HP\right)|\Phi_{0}\rangle\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)\left(|\Phi_{0}\rangle+R_{H}H|\Phi_{0}\rangle\right)\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)P|\Phi_{0}\rangle+Q\left(E-H\right)\left(E-H\right)^{-1}QH|\Phi_{0}\rangle\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle+Q\left(E-H\right)|\Phi_{0}\rangle+QH|\Phi_{0}\rangle\\
+    &=P\left(E-H\right)|\Psi_{0}\rangle \\
+    &=|\Phi_{0}\rangle\langle\Phi_{0}|\left(E-H\right)|\Psi_{0}\rangle=0
+  \end{align*}
+  Therefore this form of the wave operator is consistent with the SE.  Now we
+  will use the wave operator to derive the form of the effective Hamiltonian
+  starting from the SE:
+  \begin{align*}
+    \left(E-H\right)|\Psi\rangle
+    &=E|\Psi\rangle-H\Omega|\Phi_{0}\rangle=E|\Psi\rangle-H\left(P+R_{H}HP\right)|\Phi_{0}\rangle \\
+    &=E|\Psi\rangle-H\left(P+QR_{H}QHP\right)|\Phi_{0}\rangle\\
+    &=E|\Psi\rangle-H\left(P+Q(E-QHQ)^{-1}QHP\right)|\Phi_{0}\rangle
+  \end{align*}
+  Multiplying by $P$ on the left:
+  \begin{align*}
+    &\Rightarrow PE|\Psi\rangle-PH\left(P+Q(E-QHQ)^{-1}QHP\right)|\Phi_{0}\rangle \\
+    &=E|\Phi_{0}\rangle-(PHP+PHQ(E-QHQ)^{-1}QHP)|\Phi_{0}\rangle=\left(E-H_{\text{eff}}\right)|\Phi_{0}\rangle=0
+  \end{align*}
+  We identify the effective Hamiltonian as desired:
+  \begin{align*}
+    H_{\text{eff}}=PHP+PHQ(E-QHQ)^{-1}QHP
+  \end{align*}
+  The optical potential is derived by splitting the Hamiltonian into teh
+  following pieces $H=T_{0}+H_{A}+V$ where $H_{A}$ is the Hamiltonia that
+  describes the internal degrees of freedom in the target. Note that because
+  $E_{0}\equiv0$ that $H_{A}|\Phi_{0}\rangle=0\Rightarrow H_{A}P=PH_{A}=0$ and
+  $PT_{0}=T_{0}|\Phi_{0}\rangle$ since $|\Phi_{0}\rangle$ does not depend on
+  the projectile degrees of freedom. So we can write the effective Hamiltonian
+  as:
+  \begin{align*}
+    H_{\text{eff}}
+    &=P\left(T_{0}+H_{A}+V\right)P+P\left(T_{0}+H_{A}+V\right)Q(E-QHQ)^{-1}Q\left(T_{0}+H_{A}+V\right)P \\
+    &=P\left(T_{0}+V\right)P+PVQ(E-QHQ)^{-1}QVP \\
+    &=T_{0}P+PVP+PVQ(E-QHQ)^{-1}QVP
+  \end{align*}
+  If we substitute into SE then:
+  {\small
+    \begin{align*}
+      \left(E-\left(T_{0}P+PVP+PVQ(E-QHQ)^{-1}QVP\right)\right)|\Psi\rangle&=0 \\
+      \left(E-T_{0}+PVP+PVQ(E-QHQ)^{-1}QVP\right)|\chi_{0}\Phi_{0}\rangle&=0 \\
+      \left(E-T_{0}+|\Phi_{0}\rangle\langle\Phi_{0}|V|\Phi_{0}\rangle\langle\Phi_{0}|+|\Phi_{0}\rangle\langle\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}\rangle\langle\Phi_{0}|\right)|\chi_{0}\Phi_{0}\rangle&=0 \\
+      \left(E-T_{0}\right)|\chi_{0}\Phi_{0}\rangle+|\Phi_{0}\rangle\langle\Phi_{0}|V|\Phi_{0}\rangle|\chi_{0}\rangle+|\Phi_{0}\rangle\langle\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}\rangle|\chi_{0}\rangle&=0
+    \end{align*}}
+  Multiplying on the left with $\langle\Phi_{0}|$ yields:
+  {\small
+    \begin{align*}
+      \left(E-T_{0}+\langle\Phi_{0}|V|\Phi_{0}\rangle+\langle\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}\rangle\right)|\chi_{0}\rangle
+      =\left(E-T_{0}+U_{\text{opt}}\right)|\chi_{0}\rangle=0
+    \end{align*}}
+  We can identify the optical potential as:
+  \begin{align*}
+    U_{\text{opt}}=\langle\Phi_{0}|V|\Phi_{0}\rangle+\langle\Phi_{0}|VQ(E-QHQ)^{-1}QV|\Phi_{0}\rangle
+  \end{align*}
 
 \item Let
   \begin{itemize}
