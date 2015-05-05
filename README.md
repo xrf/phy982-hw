@@ -91,5 +91,5 @@ Dependencies
             ( cd "`kpsewhich -var-value TEXMFHOME`/tex/latex" && sh ) <tools/sigilz.shar
             texhash
 
-[1]: https://people.nscl.msu.edu/~nunes/phy982
+[1]: https://people.nscl.msu.edu/~nunes/phy982/phy982web2015.htm
 [2]: https://github.com/wch/extrafont/blob/master/README.md#using-extrafont
