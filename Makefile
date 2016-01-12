@@ -22,7 +22,11 @@ clean:
 
 # ----------------------------------------------------------------------------
 
-dist/hw1.dat.ok: hw1.hs Common.hs phy982.cabal Setup.hs
+cabal.sandbox.config:
+	@cabal sandbox init
+
+dist/hw1.dat.ok: hw1.hs Common.hs phy982.cabal Setup.hs cabal.sandbox.config
+	@cabal install --only-dependencies
 	cabal run
 	@mkdir -p dist
 	@touch $@
