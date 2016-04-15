@@ -1,0 +1,57 @@
+Integrate[
+  SphericalBesselJ[1, k r] Exp[-γ r] r^2,
+  {r, 0, ∞},
+  Assumptions -> k > 0 && γ > 0
+] ==
+  2 k / (γ^2 + k^2)^2
+
+integrand[m_, M_, k_, γ_, r_] := (
+  √(2 γ) / r Exp[-γ r] SphericalHarmonicY[0, 0, 0, 0]
+  r KroneckerDelta[m, M] SphericalHarmonicY[1, 0, 0, 0]
+  4 π I SphericalBesselJ[1, k r] √(2 / π) r^2
+)
+
+Assuming[k > 0 && γ > 0,
+  Sum[Sum[Abs[Integrate[
+    integrand[m, M, k, γ, r],
+    {r, 0, ∞}
+  ]]^2, {M, -1, 1}], {m, -1, 1}] // FullSimplify
+] / (ħ * v) ==
+  144 γ k^2 / (ħ (γ^2 + k^2)^4 π v)
+
+math =
+  Assuming[k > 0 && γ > 0,
+    Sum[Sum[Abs[Integrate[
+      integrand[m, M, k, γ, r] KroneckerDelta[m, 0],
+      {r, 0, ∞}
+    ]]^2, {M, -1, 1}], {m, -1, 1}] // FullSimplify
+  ]
+math == 48 γ k^2 / ((γ^2 + k^2)^4 π)
+
+Assuming[eb > 0 && e > 0 && μ > 0 && ħ > 0, FullSimplify[
+  math eZ^2 μ / (ħ^2 k) σ^2 / (2 J + 1)
+  /. J -> 1
+  /. γ -> √(2 μ eb / ħ^2)
+  /. k -> √(2 μ e  / ħ^2)
+]] ==
+  2 √(e eb) eZ^2 ħ^4 σ^2 / ((e + eb)^4 μ^2 π)
+
+DiscretePlot[
+  √((2 l + 1) / (4 π)) - SphericalHarmonicY[l, 0, 0, 0],
+  {l, 0, 10}
+]
+
+2 π Integrate[Exp[I k r Cos[t]] Sin[t], {t, 0, π}] ==
+  4 π Sin[k r] /(k r)
+
+Integrate[r Sin[r] Exp[-e r], {r, 0, ∞}, Assumptions -> Re[e] > 0] ==
+  2 e / (1 + e^2)^2
+
+Plot[Limit[4 π Sin[k r] / (k r) r^2, k-> 0], {r, 0, 10}]
+
+Integrate[
+  Exp[-y r] SphericalBesselJ[1, k r] r^2,
+  {r, 0, ∞},
+  Assumptions -> y > 0 && k > 0
+] ==
+  2 k / (k^2 + y^2)^2
